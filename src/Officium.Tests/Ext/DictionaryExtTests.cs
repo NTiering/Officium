@@ -8,6 +8,7 @@ using Moq;
 using Officium.Ext;
 using Xunit;
 using FluentAssert;
+using Officium.Commands;
 
 namespace Officium.Tests.Ext
 {
@@ -62,16 +63,17 @@ namespace Officium.Tests.Ext
             };
 
             // act 
-            var result = dict.ToObject<TestObject>();
+            var result = dict.ToObject(typeof(TestObject)) as TestObject;
 
             result.Name.ShouldBeEqualTo("Rose");
             result.Number.ShouldBeEqualTo(22);
         }
 
-        class TestObject
+        class TestObject : ICommand
         {
             public int Number { get; set; }
             public string Name { get; set; }
+            public ICommandResponse CommandResponse { get; set; }
         }
     }
 }

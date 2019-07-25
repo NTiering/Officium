@@ -8,6 +8,6 @@ namespace Officium.Commands
     public interface ICommandFactory
     {
         void RegisterCommandType<T>(CommandRequestType type, Regex requestSourceMatch) where T : ICommand,new();     
-        ICommand BuildCommand(CommandRequestType type, Regex requestSourceMatch,object input);
+        ICommand BuildCommand(CommandRequestType type, string requestSource ,Dictionary<string,string> input);
     }
 }

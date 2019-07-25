@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using FluentAssert;
+using System.Text.RegularExpressions;
 
 namespace Officium.Tests.Commands
 {
@@ -21,15 +22,18 @@ namespace Officium.Tests.Commands
         {
             var values = new Dictionary<string, string>();
             values["name"] = "rose tattoo";
+          
+            var builder = new OfficiumCommandFactory();
+            builder.RegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            var cmd = (MockCommand) builder.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
-            //var cmd = new OfficiumCommandFactory().BuildCommand(values);
-            //cmd.CommandRequest.
+            cmd.Name.ShouldBeEqualTo("rose tattoo");
         }
 
 
         private class MockCommand : ICommand
         {
-            public ICommandRequest CommandRequest { get; set; }
+            public string Name { get; set; }
             public ICommandResponse CommandResponse { get; set; }
         }
     }

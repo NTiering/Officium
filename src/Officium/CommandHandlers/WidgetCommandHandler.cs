@@ -40,7 +40,6 @@ namespace FunctionApp2.CommandHandlers
 
     public class WidgetCommand : ICommand
     {
-        public ICommandRequest CommandRequest { get; set; }
         public ICommandResponse CommandResponse { get; set; }
     }
     

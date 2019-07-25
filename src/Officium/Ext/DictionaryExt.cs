@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Officium.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,9 @@ namespace Officium.Ext
                });
         }
 
-        public static T ToObject<T>(this IDictionary<string, string> dict) where T : new()
+        public static ICommand ToObject(this IDictionary<string, string> dict, Type type)
         {
-            var t = new T();
+            var t = Activator.CreateInstance(type);
             PropertyInfo[] properties = t.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
@@ -51,7 +52,7 @@ namespace Officium.Ext
                 object newA = Convert.ChangeType(item.Value, newT);
                 t.GetType().GetProperty(property.Name).SetValue(t, newA, null);
             }
-            return t;
+            return t as ICommand;
         }
     }
 }

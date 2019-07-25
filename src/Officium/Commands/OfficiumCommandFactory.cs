@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using Officium.Ext;
 using System.Text.RegularExpressions;
 
 namespace Officium.Commands
 {
     public class OfficiumCommandFactory : ICommandFactory
     {
-        private List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
+        private readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
 
-        public ICommand BuildCommand(CommandRequestType type, Regex requestSourceMatch, object input)
+        public ICommand BuildCommand(CommandRequestType commentType, string requestSource, Dictionary<string, string> input)
         {
-            throw new NotImplementedException();
+            var cle = commandListEntries.FirstOrDefault(x => x.RequestType == commentType && x.RequestSourceMatch.IsMatch(requestSource));
+            var rtn = input.ToObject(cle.CommandType);
+            return rtn;
         }
 
         public void RegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
