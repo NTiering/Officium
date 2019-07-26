@@ -1,7 +1,4 @@
 ﻿using Officium.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FunctionApp2.CommandHandlers
 {
@@ -12,7 +9,6 @@ namespace FunctionApp2.CommandHandlers
     }
 
     public abstract class HttpPostCommandHandler : ICommandHandler
-
     {
         public bool CanHandle(ICommand command)
         {
@@ -22,44 +18,33 @@ namespace FunctionApp2.CommandHandlers
         public abstract void Handle(ICommand command);
     }
 
-    public interface IHttpPutCommandHandler<T> : ICommandHandler
-        where T : ICommand
+    public abstract class HttpDeleteCommandHandler : ICommandHandler
     {
-
-    }
-
-    public interface IHttpDeleteCommandHandler<T> : ICommandHandler
-        where T : ICommand
-    {
-
-    }
-
-    public interface IHttpGetCommandHandler<T> : ICommandHandler
-        where T : ICommand
-    {
-
-    }     
-
-      
-
-
-    public class WidgetCommand : ICommand
-    {
-        public ICommandResponse CommandResponse { get; set; }
-        public CommandRequestType CommandRequestType { get ; set ; }
-    }
-    
-    public interface ICommandHandlerFactory
-    {
-        ICommandHandler BuildForCommand<T>(Func<object,Type> typeResolver);
-    }
-
-    public class WidgetCommandHandler : HttpPostCommandHandler
-    {        
-
-        public override void Handle(ICommand command)
+        public bool CanHandle(ICommand command)
         {
-            throw new NotImplementedException();
+            return command.CommandRequestType == CommandRequestType.HttpDelete;
         }
+
+        public abstract void Handle(ICommand command);
     }
+
+    public abstract class HttpGetCommandHandler : ICommandHandler
+    {
+        public bool CanHandle(ICommand command)
+        {
+            return command.CommandRequestType == CommandRequestType.HttpGet;
+        }
+
+        public abstract void Handle(ICommand command);
+    }
+
+    public abstract class HttpPutCommandHandler : ICommandHandler
+    {
+        public bool CanHandle(ICommand command)
+        {
+            return command.CommandRequestType == CommandRequestType.HttpPut;
+        }
+
+        public abstract void Handle(ICommand command);
+    }   
 }
