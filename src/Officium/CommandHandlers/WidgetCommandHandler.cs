@@ -5,31 +5,36 @@ using System.Text;
 
 namespace FunctionApp2.CommandHandlers
 {
-    public interface ICommandHandler<T>
-       where T : ICommand
+    public interface ICommandHandler       
     {
+        bool CanHandle(ICommand command);
         void Handle(ICommand command);
     }
 
-    public interface IHttpPostCommandHandler<T> : ICommandHandler<T>
+    public abstract class HttpPostCommandHandler : ICommandHandler
+
+    {
+        public bool CanHandle(ICommand command)
+        {
+            return command.CommandRequestType == CommandRequestType.HttpPost;
+        }
+
+        public abstract void Handle(ICommand command);
+    }
+
+    public interface IHttpPutCommandHandler<T> : ICommandHandler
         where T : ICommand
     {
 
     }
 
-    public interface IHttpPutCommandHandler<T> : ICommandHandler<T>
+    public interface IHttpDeleteCommandHandler<T> : ICommandHandler
         where T : ICommand
     {
 
     }
 
-    public interface IHttpDeleteCommandHandler<T> : ICommandHandler<T>
-        where T : ICommand
-    {
-
-    }
-
-    public interface IHttpGetCommandHandler<T> : ICommandHandler<T>
+    public interface IHttpGetCommandHandler<T> : ICommandHandler
         where T : ICommand
     {
 
@@ -41,16 +46,18 @@ namespace FunctionApp2.CommandHandlers
     public class WidgetCommand : ICommand
     {
         public ICommandResponse CommandResponse { get; set; }
+        public CommandRequestType CommandRequestType { get ; set ; }
     }
     
     public interface ICommandHandlerFactory
     {
-        ICommandHandler<T> BuildForCommand<T>(Func<object,Type> typeResolver) where T : ICommand;
+        ICommandHandler BuildForCommand<T>(Func<object,Type> typeResolver);
     }
 
-    public class WidgetCommandHandler : IHttpPostCommandHandler<WidgetCommand>
-    {
-        public void Handle(ICommand command)
+    public class WidgetCommandHandler : HttpPostCommandHandler
+    {        
+
+        public override void Handle(ICommand command)
         {
             throw new NotImplementedException();
         }

@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-
 namespace Officium.Commands
 {
     public enum CommandRequestType
     {
-        HttpPost,
-        HttpGet,
-        HttpPut,
-        HttpDelete,
+        NoMatch = 0,
+        HttpPost = 1,
+        HttpGet = 2,
+        HttpPut = 3,
+        HttpDelete = 4,
     }
 }

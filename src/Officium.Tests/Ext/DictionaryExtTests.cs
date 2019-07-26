@@ -74,6 +74,7 @@ namespace Officium.Tests.Ext
             public int Number { get; set; }
             public string Name { get; set; }
             public ICommandResponse CommandResponse { get; set; }
+            public CommandRequestType CommandRequestType { get; set; }
         }
     }
 }

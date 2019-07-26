@@ -14,7 +14,10 @@ namespace Officium.Ext
         {
             if (query == null) return;
             if (query.Keys == null) return;
-            query.Keys.ToList().ForEach(x => {
+            query.Keys
+                .ToList()
+                .ForEach(x =>
+            {
                 input[x] = query[x];
             });
         }
@@ -24,35 +27,32 @@ namespace Officium.Ext
             if (dict == null) return;
             if (dict.Keys == null) return;
             dict.Keys
-               .ToList().ForEach(
-               x => {
+               .ToList()
+               .ForEach(x =>
+               {
                    input[x] = dict[x];
                });
         }
 
         public static ICommand ToObject(this IDictionary<string, string> dict, Type type)
         {
-            var t = Activator.CreateInstance(type);
-            PropertyInfo[] properties = t.GetType().GetProperties();
+            var tCmd = Activator.CreateInstance(type);
+            if (dict == null) return tCmd as ICommand;
+
+            var properties = tCmd.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
                 if (!dict.Any(x => x.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase)))
                     continue;
 
-                KeyValuePair<string, string> item = dict.First(x => x.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
-
-                // Find which property type (int, string, double? etc) the CURRENT property is...
-                Type tPropertyType = t.GetType().GetProperty(property.Name).PropertyType;
-
-                // Fix nullables...
-                Type newT = Nullable.GetUnderlyingType(tPropertyType) ?? tPropertyType;
-
-                // ...and change the type
-                object newA = Convert.ChangeType(item.Value, newT);
-                t.GetType().GetProperty(property.Name).SetValue(t, newA, null);
+                var item = dict.First(x => x.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
+                var tPropertyType = tCmd.GetType().GetProperty(property.Name).PropertyType;
+                var newT = Nullable.GetUnderlyingType(tPropertyType) ?? tPropertyType;
+                var newA = Convert.ChangeType(item.Value, newT);
+                tCmd.GetType().GetProperty(property.Name).SetValue(tCmd, newA, null);
             }
-            return t as ICommand;
+            return tCmd as ICommand;
         }
     }
 }

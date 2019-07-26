@@ -10,16 +10,22 @@ namespace Officium.Commands
     {
         private readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
 
-        public ICommand BuildCommand(CommandRequestType commentType, string requestSource, Dictionary<string, string> input)
+        public ICommand BuildCommand(CommandRequestType commandType, string requestSource, Dictionary<string, string> input)
         {
-            var cle = commandListEntries.FirstOrDefault(x => x.RequestType == commentType && x.RequestSourceMatch.IsMatch(requestSource));
-            var rtn = input.ToObject(cle.CommandType);
+            var cle = commandListEntries.FirstOrDefault(x => IsCommandListMatch(x, commandType, requestSource));
+            var rtn = (cle == null) ? new NoMatchCommand() : input.ToObject(cle.CommandType);
+            rtn.CommandRequestType = (cle == null) ? CommandRequestType.NoMatch : commandType;
             return rtn;
-        }
+        }      
 
         public void RegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
         {
             commandListEntries.Add(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));
+        }
+
+        private static bool IsCommandListMatch(CommandListEntry commandListEntry, CommandRequestType commentType, string requestSource)
+        {
+            return commandListEntry.RequestType == commentType && commandListEntry.RequestSourceMatch.IsMatch(requestSource);
         }
 
         private class CommandListEntry
