@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Officium.CommandValidators;
-
-namespace Officium.Commands
+﻿namespace Officium.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Officium.CommandValidators;
     public class CommandResponse : ICommandResponse
     {
         private readonly Dictionary<string, string> values = new Dictionary<string, string>();

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Officium.Commands;
-
-namespace Officium.CommandValidators
+﻿namespace Officium.CommandValidators
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Officium.Commands;
     public class NoMatchCommandValidator : ICommandValidator
     {
         public bool CanValidate(ICommand command)
@@ -15,7 +12,7 @@ namespace Officium.CommandValidators
 
         public IEnumerable<IValidationResult> Validate(ICommand command)
         {
-            return Enumerable.Empty<IValidationResult>();
+            return new IValidationResult[0];
         }
     }
 }

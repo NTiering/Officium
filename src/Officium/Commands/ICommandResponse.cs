@@ -1,8 +1,7 @@
-﻿using Officium.CommandValidators;
-using System.Collections.Generic;
-
-namespace Officium.Commands
+﻿namespace Officium.Commands
 {
+    using Officium.CommandValidators;
+    using System.Collections.Generic;
     public interface ICommandResponse
     {
         IValidationResult[] ValidationResults { get; set; }

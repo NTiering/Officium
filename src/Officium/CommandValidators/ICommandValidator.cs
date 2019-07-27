@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Officium.Commands;
-
-namespace Officium.CommandValidators
+﻿namespace Officium.CommandValidators
 {
+    using System.Collections.Generic;
+    using Officium.Commands;
     public interface ICommandValidator
     {
         bool CanValidate(ICommand command);

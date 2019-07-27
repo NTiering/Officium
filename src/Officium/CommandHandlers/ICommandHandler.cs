@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Officium.Commands;
-
-namespace Officium.CommandHandlers
+﻿namespace Officium.CommandHandlers
 {
+    using Officium.Commands;
     public interface ICommandHandler
     {
         bool CanHandle(ICommand command);

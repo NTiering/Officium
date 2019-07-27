@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Officium.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace Officium.Ext
+﻿namespace Officium.Ext
 {
+    using Microsoft.AspNetCore.Http;
+    using Officium.Commands;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public static class DictionaryExt
     {
         public static void AddRange(this Dictionary<string, string> input, IQueryCollection query)

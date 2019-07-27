@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Officium.CommandValidators
+﻿namespace Officium.CommandValidators
 {
     public interface IValidationResult
     {
+        string PropertyName { get; }
+        string PropertyValue { get; }
     }
 }

@@ -1,11 +1,8 @@
-﻿using Officium.CommandHandlers;
-using Officium.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Officium
+﻿namespace Officium
 {
+    using Officium.CommandHandlers;
+    using Officium.Commands;
+    using System;
     public static class ServiceRegister
     {
         public static void Register(Action<Type, Type> register)

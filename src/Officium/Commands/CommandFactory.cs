@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Officium.Ext;
-using System.Text.RegularExpressions;
-
-namespace Officium.Commands
+﻿namespace Officium.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Officium.Ext;
+    using System.Text.RegularExpressions;
     public class CommandFactory : ICommandFactory
     {
         private readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
