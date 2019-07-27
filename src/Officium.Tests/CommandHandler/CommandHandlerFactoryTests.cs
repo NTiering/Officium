@@ -1,11 +1,9 @@
 ﻿using Officium.Commands;
-using System.Collections.Generic;
 using Xunit;
 using FluentAssert;
-using System.Text.RegularExpressions;
 using Officium.CommandHandlers;
-using FunctionApp2.CommandHandlers;
 using Moq;
+using Officium.CommandValidators;
 
 namespace Officium.Tests.CommandHandler
 {
@@ -14,31 +12,44 @@ namespace Officium.Tests.CommandHandler
         [Fact]
         public void CanBeConstructed()
         {
-            (new CommandHandlerFactory(null)).ShouldNotBeNull();
+            (new CommandHandlerFactory(null,null)).ShouldNotBeNull();
         }
 
         [Fact]
         public void NullsDontCauseExceptions()
         {
-            new CommandHandlerFactory(null).GetCommandHandler(null);
-        }
-
-        [Fact]
-        public void DefaultToNoMatchCommandHandler()
-        {
-            (new CommandHandlerFactory(null).GetCommandHandler(null) as NoMatchCommandHandler).ShouldNotBeNull();
-        }
+            new CommandHandlerFactory(null,null).GetCommandHandler(null);
+        }       
 
         [Fact]
         public void SelectsCorrectHandlers()
         {
+            var command = new Mock<ICommand>();
+            command.Setup(x => x.CommandResponse).Returns(new CommandResponse());
             var handler = new Mock<ICommandHandler>();
-            var command = new Mock<ICommand>().Object;
             handler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
 
-            new CommandHandlerFactory(new[] {handler.Object}).GetCommandHandler(command).ShouldBeEqualTo(handler.Object);
+            new CommandHandlerFactory(new[] { handler.Object }, null).GetCommandHandler(command.Object).Handle(command.Object);
+
+            handler.Verify(x => x.Handle(command.Object), Times.Once);
         }
 
-        
+        [Fact]
+        public void SelectsCorrectValidator()
+        {
+            var handler = new Mock<ICommandHandler>();
+            handler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            var command = new Mock<ICommand>();
+            command.Setup(x => x.CommandResponse).Returns(new CommandResponse());
+
+            var validator = new Mock<ICommandValidator>();
+            validator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
+
+            new CommandHandlerFactory(new[] { handler.Object }, new[] { validator.Object }).GetCommandHandler(command.Object).Handle(command.Object);
+
+            validator.Verify(x => x.Validate(command.Object), Times.Once);
+        }
+
+
     }
 }

@@ -37,6 +37,7 @@ namespace Officium.Commands
         private static ICommand MakeCommand(CommandListEntry cle, Dictionary<string, string> input)
         {
             var rtn = (cle == null) ? new NoMatchCommand() : input.ToObject(cle.CommandType);
+            rtn.CommandResponse = new CommandResponse(); 
             return rtn;
         }
 

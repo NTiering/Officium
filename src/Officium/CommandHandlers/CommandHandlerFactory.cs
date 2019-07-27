@@ -1,5 +1,4 @@
-﻿using FunctionApp2.CommandHandlers;
-using Officium.Commands;
+﻿using Officium.Commands;
 using Officium.CommandValidators;
 using Officium.Ext;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 
 namespace Officium.CommandHandlers
 {
-    public class CommandHandlerFactory
+    public class CommandHandlerFactory : ICommandHandlerFactory
     {
         private readonly ICommandHandler[] commandHandlers;
         private readonly ICommandValidator[] commandValidators;
@@ -20,17 +19,19 @@ namespace Officium.CommandHandlers
 
         public ICommandHandler GetCommandHandler(ICommand command)
         {
-            var commandValidator = commandValidators
+            var validators = commandValidators
                 .Where(x => command != null && x.CanValidate(command))
                 .ToList();
-            commandValidator.Add(new NoMatchCommandValidator());
-            
+            validators.Add(new NoMatchCommandValidator());
 
-            var rtn = commandHandlers
+
+            var handler = commandHandlers
                 .FirstOrDefault(x => command != null && x.CanHandle(command))
                 .WithDefault(new NoMatchCommandHandler());
+
+            var rtn = new ValidatingCommandHandler(validators, handler);
             return rtn;
-        }        
+        }
     }
 
     public class ValidatingCommandHandler : ICommandHandler
@@ -48,12 +49,17 @@ namespace Officium.CommandHandlers
 
         public void Handle(ICommand command)
         {
+            var validationResults = new List<IValidationResult>();
             commandValidators.ToList().ForEach(v =>
             {
-                //todo Validate and collect results
+                validationResults.AddRange(v.Validate(command));
             });
+            command.CommandResponse.ValidationResults = validationResults.Where(x => x != null).ToArray();
 
-            commandHandler.Handle(command);
+            if (command.CommandResponse.ValidationResults.Any() == false)
+            {
+                commandHandler.Handle(command);
+            }            
         }
     }
 }

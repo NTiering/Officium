@@ -8,5 +8,6 @@ namespace Officium.CommandValidators
     public interface ICommandValidator
     {
         bool CanValidate(ICommand command);
+        IEnumerable<IValidationResult> Validate(ICommand command);
     }
 }

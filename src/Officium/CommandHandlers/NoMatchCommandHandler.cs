@@ -1,5 +1,4 @@
-﻿using FunctionApp2.CommandHandlers;
-using Officium.Commands;
+﻿using Officium.Commands;
 
 namespace Officium.CommandHandlers
 {
