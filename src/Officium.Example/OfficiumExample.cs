@@ -40,12 +40,7 @@ namespace Officium.Example
             ExecuteCommandHandler(command);
 
             log.LogInformation($"Processed {command.CommandRequestType.ToString()} for '{req.Path}' with ");
-
-            string name = req.Query["name"];
-
-
-            // name = name ?? data?.name;
-
+           
             return new OkObjectResult(command.CommandResponse.Values);
         }
 
