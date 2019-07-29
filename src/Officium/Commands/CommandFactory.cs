@@ -9,6 +9,23 @@
     {
         private static readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
 
+        public CommandFactory()
+        {
+
+        }
+
+        public CommandFactory(bool removeCommandListEntries)
+        {
+            if (removeCommandListEntries)
+            {
+                lock (typeof(CommandFactory))
+                {
+                    commandListEntries.Clear();
+                }
+                
+            }
+        }
+
         public ICommand BuildCommand(CommandRequestType commandType, string requestSource, Dictionary<string, string> input)
         {
             var cle = SelectCommandListEntries(commandType, requestSource);
@@ -17,20 +34,32 @@
             return rtn;
         }
 
-        public void RegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
+        public bool TryRegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
         {
-            commandListEntries.Add(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));
+            return TryAdd(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));            
         }
 
-        public void RegisterCommandType(CommandRequestType commandType, Regex requestSourceMatch , Type t) 
+      
+
+        public bool TryRegisterCommandType(CommandRequestType commandType, Regex requestSourceMatch , Type t) 
         {
-            commandListEntries.Add(new CommandListEntry(commandType, requestSourceMatch, t));
+            return TryAdd(new CommandListEntry(commandType, requestSourceMatch, t));
         }
 
         private CommandListEntry SelectCommandListEntries(CommandRequestType commandType, string requestSource)
         {
             var rtn = commandListEntries.FirstOrDefault(x => IsCommandListMatch(x, commandType, requestSource));
             return rtn;
+        }
+
+        private bool TryAdd(CommandListEntry commandListEntry)
+        {
+            var existsAlready = commandListEntries.Any(x=> x.CompareTo(commandListEntry) == 1);
+            if (existsAlready == false)
+            {
+                commandListEntries.Add(commandListEntry);
+            }
+            return existsAlready;
         }
 
         private static void SetCommandType(CommandRequestType commandType, CommandListEntry cle, ICommand rtn)
@@ -51,7 +80,7 @@
             return rtn;
         }
 
-        private class CommandListEntry
+        private class CommandListEntry : IComparable<CommandListEntry>
         {
             public CommandListEntry(CommandRequestType requestType, Regex requestSourceMatch, Type commandType)
             {
@@ -62,6 +91,14 @@
             public CommandRequestType RequestType { get; }
             public Regex RequestSourceMatch { get; }
             public Type CommandType { get; }
+           
+            public int CompareTo(CommandListEntry other)
+            {
+                if (RequestType != other.RequestType) return 0;
+                if (RequestSourceMatch != other.RequestSourceMatch) return 0;
+                if (CommandType != other.CommandType) return 0;
+                return 1;
+            }
         }
     }
 }

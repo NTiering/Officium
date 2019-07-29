@@ -34,7 +34,7 @@
             commandTypes.ForEach(x => 
             {
                 var attrib = x.GetCustomAttributes<CommandHandlerRoutingAttribute>().First();
-                commandFactory.RegisterCommandType(attrib.RequestType, new Regex(attrib.Path), x);
+                commandFactory.TryRegisterCommandType(attrib.RequestType, new Regex(attrib.Path), x);
             });
 
        //     

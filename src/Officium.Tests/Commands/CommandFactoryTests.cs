@@ -11,19 +11,19 @@ namespace Officium.Tests.Commands
         [Fact]
         public void CanBeConstructed()
         {
-            (new CommandFactory() == null).ShouldBeFalse();
+            (new CommandFactory(true) == null).ShouldBeFalse();
         }
 
         [Fact]
         public void CanPopulateFromDictionary()
         {            
 
-            var factory = new CommandFactory();
+            var factory = new CommandFactory(true);
             var values = new Dictionary<string, string>
             {
                 ["name"] = "rose tattoo"
             };
-            factory.RegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
 
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
@@ -33,23 +33,31 @@ namespace Officium.Tests.Commands
         [Fact]
         public void WillPopulateCommandRequestType()
         {
-            var factory = new CommandFactory();
+            var factory = new CommandFactory(true);
             var values = new Dictionary<string, string>
             {
                 ["name"] = "rose tattoo"
             };
-            factory.RegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
             cmd.CommandRequestType.ShouldBeEqualTo(CommandRequestType.HttpPost);
         }
 
         [Fact]
+        public void WillNotAddDuplicates()
+        {
+            var factory = new CommandFactory(true);            
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex(".")).ShouldBeTrue();
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex(".")).ShouldBeFalse();  
+        }
+
+        [Fact]
         public void CanPopulateFromEmptyDictionary()
         {
-            var factory = new CommandFactory();
+            var factory = new CommandFactory(true);
             var values = new Dictionary<string, string>();            
-            factory.RegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
             cmd.Name.ShouldBeNull();
@@ -58,8 +66,8 @@ namespace Officium.Tests.Commands
         [Fact]
         public void CanPopulateFromNullDictionary()
         {
-            var factory = new CommandFactory();
-            factory.RegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            var factory = new CommandFactory(true);
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", null);
 
             cmd.Name.ShouldBeNull();
@@ -68,7 +76,7 @@ namespace Officium.Tests.Commands
         [Fact]
         public void WillReturnNoMatchCommandIfNoMatch()
         {
-            var factory = new CommandFactory();
+            var factory = new CommandFactory(true);
             var cmd = (NoMatchCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", null);
 
             cmd.ShouldNotBeNull();
@@ -77,7 +85,7 @@ namespace Officium.Tests.Commands
         [Fact]
         public void NoMatchCommandReturnsCorrectCommandRequestType()
         {
-            var factory = new CommandFactory();
+            var factory = new CommandFactory(true);
             var cmd = (NoMatchCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", null);
 
             cmd.CommandRequestType.ShouldBeEqualTo(CommandRequestType.NoMatch);
