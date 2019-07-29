@@ -17,7 +17,7 @@ namespace Officium.Tests.CommandValidatorTests
             var commandValidator = new Mock<ICommandValidator>();
             commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(false);
 
-            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object });
+            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object },null);
 
             chf.GetCommandHandler(command)
                 .Handle(command);
@@ -39,7 +39,7 @@ namespace Officium.Tests.CommandValidatorTests
             var commandValidator = new Mock<ICommandValidator>();
             commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
 
-            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object });
+            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object }, null);
 
             chf.GetCommandHandler(command)
                 .Handle(command);
@@ -61,7 +61,7 @@ namespace Officium.Tests.CommandValidatorTests
             commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
             commandValidator.Setup(x => x.Validate(It.IsAny<ICommand>())).Returns(new[] { new Mock<IValidationResult>().Object});
 
-            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object });
+            var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object },null);
 
             chf.GetCommandHandler(command)
                 .Handle(command);

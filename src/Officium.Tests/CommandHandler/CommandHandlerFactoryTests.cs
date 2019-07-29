@@ -12,13 +12,13 @@ namespace Officium.Tests.CommandHandler
         [Fact]
         public void CanBeConstructed()
         {
-            (new CommandHandlerFactory(null,null)).ShouldNotBeNull();
+            (new CommandHandlerFactory(null,null,null)).ShouldNotBeNull();
         }
 
         [Fact]
         public void NullsDontCauseExceptions()
         {
-            new CommandHandlerFactory(null,null).GetCommandHandler(null);
+            new CommandHandlerFactory(null,null,null).GetCommandHandler(null);
         }       
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Officium.Tests.CommandHandler
             var handler = new Mock<ICommandHandler>();
             handler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
 
-            new CommandHandlerFactory(new[] { handler.Object }, null).GetCommandHandler(command.Object).Handle(command.Object);
+            new CommandHandlerFactory(new[] { handler.Object }, null, null).GetCommandHandler(command.Object).Handle(command.Object);
 
             handler.Verify(x => x.Handle(command.Object), Times.Once);
         }
@@ -45,7 +45,7 @@ namespace Officium.Tests.CommandHandler
             var validator = new Mock<ICommandValidator>();
             validator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
 
-            new CommandHandlerFactory(new[] { handler.Object }, new[] { validator.Object }).GetCommandHandler(command.Object).Handle(command.Object);
+            new CommandHandlerFactory(new[] { handler.Object }, new[] { validator.Object },null).GetCommandHandler(command.Object).Handle(command.Object);
 
             validator.Verify(x => x.Validate(command.Object), Times.Once);
         }
