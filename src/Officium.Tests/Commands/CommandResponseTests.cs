@@ -1,4 +1,5 @@
 ﻿using FluentAssert;
+using Newtonsoft.Json;
 using Officium.Commands;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,25 @@ namespace Officium.Tests.Commands
             response.AddValue("key", "value");
             response.Values["key"] = "new value";
             response.Values["key"].ShouldBeEqualTo("value");
+        }
+
+        [Fact]
+        public void ValueCanBeComplex()
+        {
+            var response = new CommandResponse();
+            response.AddValue("key", new { Name = "Test" });
+            var result = (dynamic)response.Values["key"];
+            Assert.Equal("Test", result.Name);
+        }
+
+        [Fact]
+        public void ValueCanBeSerialized()
+        {
+            var response = new CommandResponse();
+            response.AddValue("key", new { Name = "Test" });
+            var result = JsonConvert.SerializeObject(response.Values);
+            result.ShouldBeEqualTo("{\"key\":{\"Name\":\"Test\"}}");
+           
         }
     }
 }
