@@ -6,11 +6,11 @@
     using Officium.CommandValidators;
     public class CommandResponse : ICommandResponse
     {
-        private readonly Dictionary<string, string> values = new Dictionary<string, string>();
+        private readonly Dictionary<string, object> values = new Dictionary<string, object>();
         public IValidationResult[] ValidationResults { get; set; }
-        public Dictionary<string, string> Values => values.ToDictionary(x => x.Key, x => x.Value);
+        public Dictionary<string, object> Values => values.ToDictionary(x=>x.Key,x=>x.Value);
 
-        public void AddValue(string name, string value, bool allowOverwrite = false)
+        public void AddValue(string name, object value, bool allowOverwrite = false)
         {
             if (values.ContainsKey(name) && !allowOverwrite)
             {

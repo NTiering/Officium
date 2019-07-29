@@ -5,8 +5,8 @@
     public interface ICommandResponse
     {
         IValidationResult[] ValidationResults { get; set; }
-        Dictionary<string, string> Values { get; }
-        void AddValue(string name, string value, bool allowOverwrite = false);
+        Dictionary<string, object> Values { get; }
+        void AddValue(string name, object value, bool allowOverwrite = false);
         bool HasValue(string name);
     }
 }
