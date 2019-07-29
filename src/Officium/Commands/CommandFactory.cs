@@ -22,7 +22,7 @@
                 {
                     commandListEntries.Clear();
                 }
-                
+
             }
         }
 
@@ -34,14 +34,14 @@
             return rtn;
         }
 
-        public bool TryRegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
+        public bool TryRegisterCommandType<T>(CommandRequestType commandType, string requestSourceMatch) where T : ICommand, new()
         {
-            return TryAdd(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));            
+            return TryAdd(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));
         }
 
-      
 
-        public bool TryRegisterCommandType(CommandRequestType commandType, Regex requestSourceMatch , Type t) 
+
+        public bool TryRegisterCommandType(CommandRequestType commandType, string requestSourceMatch, Type t)
         {
             return TryAdd(new CommandListEntry(commandType, requestSourceMatch, t));
         }
@@ -54,12 +54,12 @@
 
         private bool TryAdd(CommandListEntry commandListEntry)
         {
-            var existsAlready = commandListEntries.Any(x=> x.CompareTo(commandListEntry) == 1);
+            var existsAlready = commandListEntries.Contains(commandListEntry);
             if (existsAlready == false)
             {
                 commandListEntries.Add(commandListEntry);
             }
-            return existsAlready;
+            return !existsAlready;
         }
 
         private static void SetCommandType(CommandRequestType commandType, CommandListEntry cle, ICommand rtn)
@@ -70,7 +70,7 @@
         private static ICommand MakeCommand(CommandListEntry cle, Dictionary<string, string> input)
         {
             var rtn = (cle == null) ? new NoMatchCommand() : input.ToObject(cle.CommandType);
-            rtn.CommandResponse = new CommandResponse(); 
+            rtn.CommandResponse = new CommandResponse();
             return rtn;
         }
 
@@ -78,26 +78,28 @@
         {
             var rtn = commandListEntry.RequestType == commentType && commandListEntry.RequestSourceMatch.IsMatch(requestSource);
             return rtn;
-        }
+        }     
 
-        private class CommandListEntry : IComparable<CommandListEntry>
+        private class CommandListEntry : IEquatable<CommandListEntry>
         {
-            public CommandListEntry(CommandRequestType requestType, Regex requestSourceMatch, Type commandType)
+            public CommandListEntry(CommandRequestType requestType, string requestSourceMatch, Type commandType)
             {
-                RequestType = requestType;
-                RequestSourceMatch = requestSourceMatch;
+                RequestType = requestType;           
                 CommandType = commandType;
+                RequestSourceMatch = new Regex(requestSourceMatch);
+                RequestSourceString = requestSourceMatch;
             }
             public CommandRequestType RequestType { get; }
             public Regex RequestSourceMatch { get; }
             public Type CommandType { get; }
-           
-            public int CompareTo(CommandListEntry other)
+            public string RequestSourceString { get; }
+
+            public bool Equals(CommandListEntry other)
             {
-                if (RequestType != other.RequestType) return 0;
-                if (RequestSourceMatch != other.RequestSourceMatch) return 0;
-                if (CommandType != other.CommandType) return 0;
-                return 1;
+                if (RequestType != other.RequestType) return false;
+                if (CommandType != other.CommandType) return false;
+                if (RequestSourceString != other.RequestSourceString) return false;
+                return true;
             }
         }
     }

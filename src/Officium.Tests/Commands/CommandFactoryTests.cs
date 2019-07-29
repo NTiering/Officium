@@ -23,7 +23,7 @@ namespace Officium.Tests.Commands
             {
                 ["name"] = "rose tattoo"
             };
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".");
 
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
@@ -38,7 +38,7 @@ namespace Officium.Tests.Commands
             {
                 ["name"] = "rose tattoo"
             };
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".");
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
             cmd.CommandRequestType.ShouldBeEqualTo(CommandRequestType.HttpPost);
@@ -48,8 +48,8 @@ namespace Officium.Tests.Commands
         public void WillNotAddDuplicates()
         {
             var factory = new CommandFactory(true);            
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex(".")).ShouldBeTrue();
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex(".")).ShouldBeFalse();  
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".").ShouldBeTrue();
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".").ShouldBeFalse();  
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Officium.Tests.Commands
         {
             var factory = new CommandFactory(true);
             var values = new Dictionary<string, string>();            
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".");
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", values);
 
             cmd.Name.ShouldBeNull();
@@ -67,7 +67,7 @@ namespace Officium.Tests.Commands
         public void CanPopulateFromNullDictionary()
         {
             var factory = new CommandFactory(true);
-            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, new Regex("."));
+            factory.TryRegisterCommandType<MockCommand>(CommandRequestType.HttpPost, ".");
             var cmd = (MockCommand)factory.BuildCommand(CommandRequestType.HttpPost, "//path", null);
 
             cmd.Name.ShouldBeNull();
