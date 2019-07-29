@@ -21,6 +21,8 @@ namespace Officium.Example
             Officium.ServiceRegister.Register(register);
             ServiceRegisterTools.RegisterAllCommandHandlers(typeof(Startup).Assembly, register);
             ServiceRegisterTools.RegisterAllCommandValidators(typeof(Startup).Assembly, register);
+            ServiceRegisterTools.RegisterAllCommandFilters(typeof(Startup).Assembly, register);
+            
             RegisterCommands(builder);
         }
 

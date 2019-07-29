@@ -1,4 +1,5 @@
 ﻿using Officium.Attributes;
+using Officium.CommandFilters;
 using Officium.CommandHandlers;
 using Officium.Commands;
 using Officium.CommandValidators;
@@ -32,6 +33,18 @@ namespace Officium.Startup
 
             handlers.ForEach(x => register(typeof(ICommandHandler), x));
         }
+
+        public static void RegisterAllCommandFilters(Assembly assembly, Action<Type, Type> register)
+        {
+            var handlers = assembly.GetTypes()
+                .Where(x => x.IsAbstract == false)
+                .Where(x => x.IsClass)
+                .Where(x => typeof(ICommandFilter).IsAssignableFrom(x))
+                .ToList();
+
+            handlers.ForEach(x => register(typeof(ICommandFilter), x));
+        }
+
 
         public static void RegisterAllCommands(Assembly assembly, ICommandFactory commandFactory, Action<Type, Type> register)
         {
