@@ -1,13 +1,13 @@
-﻿namespace Officium.Example
-{
-    using Officium.Attributes;
-    using Officium.CommandHandlers;
-    using Officium.Commands;
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text.RegularExpressions;
+﻿using Officium.Attributes;
+using Officium.CommandHandlers;
+using Officium.Commands;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
+namespace Officium.Startup
+{
     public static class ServiceRegisterTools
     {
         public static void RegisterAllCommandHandlers(Assembly assembly, Action<Type, Type> register)
@@ -31,13 +31,11 @@
 
                 .ToList();
 
-            commandTypes.ForEach(x => 
+            commandTypes.ForEach(x =>
             {
                 var attrib = x.GetCustomAttributes<CommandHandlerRoutingAttribute>().First();
                 commandFactory.RegisterCommandType(attrib.RequestType, new Regex(attrib.Path), x);
             });
-
-       //     
         }
-    }  
+    }
 }

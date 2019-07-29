@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Officium.Commands;
 using Officium.Example.Commands;
+using Officium.Startup;
 
 [assembly: FunctionsStartup(typeof(Officium.Example.Startup))]
 namespace Officium.Example

@@ -1,22 +1,18 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
-using Officium.CommandHandlers;
-using Officium.Commands;
-using Officium.Example.Commands;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using Officium.Ext;
-
 namespace Officium.Example
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using System.Net.Http;
+    using Officium.CommandHandlers;
+    using Officium.Commands;
+    using System.Collections.Generic;
+    using Officium.Ext;
     public class OfficiumExample
     {
         private readonly HttpClient _client;
@@ -41,10 +37,6 @@ namespace Officium.Example
 
             log.LogInformation($"Processed {command.CommandRequestType.ToString()} for '{req.Path}' with ");
 
-            string name = req.Query["name"];
-
-
-            // name = name ?? data?.name;
 
             return new OkObjectResult(command.CommandResponse.Values);
         }
