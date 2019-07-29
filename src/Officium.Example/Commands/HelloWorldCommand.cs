@@ -1,11 +1,8 @@
-﻿using Officium.Attributes;
-using Officium.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Officium.Example.Commands
+﻿namespace Officium.Example.Commands
 {
+    using Officium.Attributes;
+    using Officium.Commands;
+
     [CommandHandlerRouting(RequestType = CommandRequestType.HttpGet, Path = ".")]
     public class HelloWorldCommand : ICommand
     {

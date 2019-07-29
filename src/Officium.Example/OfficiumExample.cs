@@ -14,6 +14,7 @@ using Officium.Example.Commands;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Officium.Ext;
+using System.Linq;
 
 namespace Officium.Example
 {
@@ -40,8 +41,10 @@ namespace Officium.Example
             ExecuteCommandHandler(command);
 
             log.LogInformation($"Processed {command.CommandRequestType.ToString()} for '{req.Path}' with ");
-           
-            return new OkObjectResult(command.CommandResponse.Values);
+
+            return command.CommandResponse.ValidationResults.Any() ? (ObjectResult)
+                new BadRequestObjectResult(command.CommandResponse.ValidationResults) :
+                new OkObjectResult(command.CommandResponse.Values);
         }
 
         private void ExecuteCommandHandler(ICommand command)

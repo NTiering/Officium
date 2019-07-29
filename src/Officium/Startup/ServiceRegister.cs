@@ -1,6 +1,7 @@
 ﻿using Officium.Attributes;
 using Officium.CommandHandlers;
 using Officium.Commands;
+using Officium.CommandValidators;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,17 @@ namespace Officium.Startup
 {
     public static class ServiceRegisterTools
     {
+        
+        public static void RegisterAllCommandValidators(Assembly assembly, Action<Type, Type> register)
+        {
+            var handlers = assembly.GetTypes()
+                .Where(x => x.IsAbstract == false)
+                .Where(x => x.IsClass)
+                .Where(x => typeof(ICommandValidator).IsAssignableFrom(x))
+                .ToList();
+
+            handlers.ForEach(x => register(typeof(ICommandValidator), x));
+        }
         public static void RegisterAllCommandHandlers(Assembly assembly, Action<Type, Type> register)
         {
             var handlers = assembly.GetTypes()
