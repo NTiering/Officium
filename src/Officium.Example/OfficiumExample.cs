@@ -1,23 +1,19 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
-using Officium.CommandHandlers;
-using Officium.Commands;
-using Officium.Example.Commands;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using Officium.Ext;
-using System.Linq;
-
 namespace Officium.Example
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using System.Net.Http;
+    using Officium.CommandHandlers;
+    using Officium.Commands;
+    using System.Collections.Generic;
+    using Officium.Ext;
+    using System.Linq;
     public class OfficiumExample
     {
         private readonly HttpClient _client;
@@ -33,7 +29,11 @@ namespace Officium.Example
 
         [FunctionName("OfficiumExample")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(
+                AuthorizationLevel.Function, 
+                "get", "post","put","delete", 
+                Route = "v1/OfficiumExample/{n1?}/{n2?}/{n3?}/{n4?}/{n5?}/{n6?}/{n7?}/{n8?}")]
+        HttpRequest req,
             ILogger log)
         {
             var input = await GetDataInput(req);
