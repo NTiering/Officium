@@ -7,7 +7,7 @@
     using System.Text.RegularExpressions;
     public class CommandFactory : ICommandFactory
     {
-        private readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
+        private static readonly List<CommandListEntry> commandListEntries = new List<CommandListEntry>();
 
         public ICommand BuildCommand(CommandRequestType commandType, string requestSource, Dictionary<string, string> input)
         {
@@ -15,11 +15,16 @@
             var rtn = MakeCommand(cle, input);
             SetCommandType(commandType, cle, rtn);
             return rtn;
-        }               
+        }
 
         public void RegisterCommandType<T>(CommandRequestType commandType, Regex requestSourceMatch) where T : ICommand, new()
         {
             commandListEntries.Add(new CommandListEntry(commandType, requestSourceMatch, typeof(T)));
+        }
+
+        public void RegisterCommandType(CommandRequestType commandType, Regex requestSourceMatch , Type t) 
+        {
+            commandListEntries.Add(new CommandListEntry(commandType, requestSourceMatch, t));
         }
 
         private CommandListEntry SelectCommandListEntries(CommandRequestType commandType, string requestSource)

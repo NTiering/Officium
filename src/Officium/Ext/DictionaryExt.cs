@@ -9,28 +9,31 @@
 
     public static class DictionaryExt
     {
-        public static void AddRange(this Dictionary<string, string> input, IQueryCollection query)
+        public static Dictionary<string, string> AddRange(this Dictionary<string, string> input, IQueryCollection query)
         {
-            if (query == null) return;
-            if (query.Keys == null) return;
+            if (query == null) return input;
+            if (query.Keys == null) return input;
             query.Keys
                 .ToList()
                 .ForEach(x =>
             {
                 input[x] = query[x];
             });
+
+            return input;
         }
 
-        public static void AddRange(this Dictionary<string, string> input, Dictionary<string, string> dict)
+        public static Dictionary<string, string> AddRange(this Dictionary<string, string> input, Dictionary<string, string> dict)
         {
-            if (dict == null) return;
-            if (dict.Keys == null) return;
+            if (dict == null) return input;
+            if (dict.Keys == null) return input;
             dict.Keys
                .ToList()
                .ForEach(x =>
                {
                    input[x] = dict[x];
                });
+            return input;
         }
 
         public static ICommand ToObject(this IDictionary<string, string> dict, Type type)
