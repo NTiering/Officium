@@ -38,7 +38,7 @@ namespace Officium.Example
             var command = AzureTools.GetCommand(_commandFactory, req, input);
             AzureTools.ExecuteCommandHandler(_commandHandlerFactory, command);
 
-            log.LogInformation($"Processed {command.CommandRequestType.ToString()} for '{req.Path}' with ");
+            log.LogInformation($"Processed {command.CommandRequestType.ToString()} for '{req.Path}' with {command.GetType()}");
 
             return command.CommandResponse.ValidationResults.Any() ? (ObjectResult)
                 new BadRequestObjectResult(command.CommandResponse.ValidationResults) :
