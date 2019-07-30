@@ -9,6 +9,13 @@
 
     public static class DictionaryExt
     {
+        //
+
+        public static IEnumerable<T> Paginate<T>(this IEnumerable<T> input, PaginationRequest req)
+        {
+            var rtn = input.Skip(req.PageSize * req.PageNum).Take(req.PageSize);
+            return rtn;
+        }
         public static Dictionary<string, string> AddRange(this Dictionary<string, string> input, IQueryCollection query)
         {
             if (query == null) return input;

@@ -9,6 +9,7 @@ using Officium.Ext;
 using Xunit;
 using FluentAssert;
 using Officium.Commands;
+using System.Linq;
 
 namespace Officium.Tests.Ext
 {
@@ -103,6 +104,59 @@ namespace Officium.Tests.Ext
             result.PageSize.ShouldBeEqualTo(25);
         }
 
+        [Fact]
+        public void CanPaginate()
+        {
+            // arrange 
+            var dict = new Dictionary<string, string>
+            {
+                ["PageNum"] = "0",
+                ["PageSize"] = "5"
+            };
+            var paginationRequest = dict.ToPaginationRequest();
+            var arr = Enumerable.Range(1, 100);
+
+            // act 
+            var result = arr.Paginate(paginationRequest).Last();
+
+            result.ShouldBeEqualTo(5);
+        }
+
+        [Fact]
+        public void CanPaginateQueryable()
+        {
+            // arrange 
+            var dict = new Dictionary<string, string>
+            {
+                ["PageNum"] = "0",
+                ["PageSize"] = "5"
+            };
+            var paginationRequest = dict.ToPaginationRequest();
+            var arr = Enumerable.Range(1, 100).AsQueryable();
+
+            // act 
+            var result = arr.Paginate(paginationRequest).Last();
+
+            result.ShouldBeEqualTo(5);
+        }
+
+        [Fact]
+        public void CanPaginateQueryableWithPages()
+        {
+            // arrange 
+            var dict = new Dictionary<string, string>
+            {
+                ["PageNum"] = "1",
+                ["PageSize"] = "5"
+            };
+            var paginationRequest = dict.ToPaginationRequest();
+            var arr = Enumerable.Range(1, 100).AsQueryable();
+
+            // act 
+            var result = arr.Paginate(paginationRequest).Last();
+
+            result.ShouldBeEqualTo(10);
+        }
 
 
         class TestObject : ICommand
