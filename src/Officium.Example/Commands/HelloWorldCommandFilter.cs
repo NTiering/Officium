@@ -1,8 +1,6 @@
-﻿using Officium.CommandFilters;
-using Officium.Commands;
-
-namespace Officium.Example.Commands
-{    
+﻿namespace Officium.Example.Commands
+{
+    using Officium.CommandFilters;
     public class HelloWorldCommandFilter : BaseCommandFilter<HelloWorldCommand>
     {
         protected override void AfterHandle(HelloWorldCommand cmd)
