@@ -69,6 +69,42 @@ namespace Officium.Tests.Ext
             result.Number.ShouldBeEqualTo(22);
         }
 
+        [Fact]
+        public void CanMakePaginatioRequestObject()
+        {
+            // arrange 
+            var dict = new Dictionary<string, string>
+            {
+                ["PageNum"] = "22",
+                ["PageSize"] = "77"
+            };
+
+            // act 
+            var result = dict.ToPaginationRequest();
+
+            result.PageNum.ShouldBeEqualTo(22);
+            result.PageSize.ShouldBeEqualTo(77);
+        }
+
+        [Fact]
+        public void CanMakePaginatioRequestObjectWithBadData()
+        {
+            // arrange 
+            var dict = new Dictionary<string, string>
+            {
+                ["PageNum"] = "wererww",
+                ["PageSize"] = "asads"
+            };
+
+            // act 
+            var result = dict.ToPaginationRequest();
+
+            result.PageNum.ShouldBeEqualTo(0);
+            result.PageSize.ShouldBeEqualTo(25);
+        }
+
+
+
         class TestObject : ICommand
         {
             public int Number { get; set; }

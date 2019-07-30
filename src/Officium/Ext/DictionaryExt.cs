@@ -36,13 +36,25 @@
             return input;
         }
 
+        public static PaginationRequest ToPaginationRequest(this IDictionary<string, string> dict)
+        {
+            var rtn = new PaginationRequest();
+            PopulateObject(dict, rtn);
+            rtn.SetDefaults();
+            return rtn;
+        }
+
         public static ICommand ToObject(this IDictionary<string, string> dict, Type type)
         {
-            var tCmd = Activator.CreateInstance(type);
-            if (dict == null) return tCmd as ICommand;
+            var command = Activator.CreateInstance(type);
+            if (dict == null) return command as ICommand;
+            PopulateObject(dict, command);
+            return command as ICommand;
+        }
 
+        private static void PopulateObject<T>(IDictionary<string, string> dict, T tCmd)
+        {
             var properties = tCmd.GetType().GetProperties();
-
             foreach (PropertyInfo property in properties)
             {
                 if (!dict.Any(x => x.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase)))
@@ -51,10 +63,34 @@
                 var item = dict.First(x => x.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
                 var tPropertyType = tCmd.GetType().GetProperty(property.Name).PropertyType;
                 var newT = Nullable.GetUnderlyingType(tPropertyType) ?? tPropertyType;
-                var newA = Convert.ChangeType(item.Value, newT);
-                tCmd.GetType().GetProperty(property.Name).SetValue(tCmd, newA, null);
+                var newA = new object();
+                try
+                {
+                    newA = Convert.ChangeType(item.Value, newT);
+                    tCmd.GetType().GetProperty(property.Name).SetValue(tCmd, newA, null);
+                }
+                catch
+                {
+                   // dont try to set it 
+                }               
+                
             }
-            return tCmd as ICommand;
+        }
+    }
+
+    public sealed class PaginationRequest
+    {
+        public int PageNum { get; internal set; }
+        public int PageSize { get; internal set; }
+        internal PaginationRequest()
+        {
+        }
+      
+
+        internal PaginationRequest SetDefaults()
+        {            
+            PageSize = (PageSize == 0) ? 25 : PageSize;
+            return this;
         }
     }
 }
