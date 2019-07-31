@@ -4,7 +4,7 @@
     using Officium.Commands;
     public interface ICommandValidator
     {
-        bool CanValidate(ICommand command);
-        IEnumerable<IValidationResult> Validate(ICommand command);
+        bool CanValidate(ICommand command, ICommandContext context);
+        IEnumerable<IValidationResult> Validate(ICommand command, ICommandContext context);
     }
 }

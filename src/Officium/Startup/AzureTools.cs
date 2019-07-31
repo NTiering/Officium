@@ -21,14 +21,14 @@
             return input;
         }
 
-        public static void ExecuteCommandHandler(ICommandHandlerFactory commandHandlerFactory, ICommand command)
+        public static void ExecuteCommandHandler(ICommandHandlerFactory commandHandlerFactory, ICommand command, ICommandContext context)
         {
-            commandHandlerFactory.GetCommandHandler(command).Handle(command);
+            commandHandlerFactory.GetCommandHandler(command,context).Handle(command, context);
         }
 
-        public static ICommand GetCommand(ICommandFactory commandFactory, HttpRequest req, Dictionary<string, string> input)
+        public static ICommand GetCommand(ICommandFactory commandFactory, ICommandContext context, Dictionary<string, string> input)
         {
-            return commandFactory.BuildCommand(req.GetCommandRequestType(), req.Path, input);
+            return commandFactory.BuildCommand(context, input);
         }
     }
 }

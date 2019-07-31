@@ -26,11 +26,10 @@
             }
         }
 
-        public ICommand BuildCommand(CommandRequestType commandType, string requestSource, Dictionary<string, string> input)
+        public ICommand BuildCommand(ICommandContext context, Dictionary<string, string> input)
         {
-            var cle = SelectCommandListEntries(commandType, requestSource);
+            var cle = SelectCommandListEntries(context.CommandRequestType, context.RequestPath);
             var rtn = MakeCommand(cle, input);
-            SetCommandType(commandType, cle, rtn);
             return rtn;
         }
 
@@ -62,15 +61,14 @@
             return !existsAlready;
         }
 
-        private static void SetCommandType(CommandRequestType commandType, CommandListEntry cle, ICommand rtn)
+        private static void SetCommandType(CommandRequestType commandType, CommandListEntry cle, ICommandContext context)
         {
-            rtn.CommandRequestType = (cle == null) ? CommandRequestType.NoMatch : commandType;
+            context.CommandRequestType = (cle == null) ? CommandRequestType.NoMatch : commandType;
         }
 
         private static ICommand MakeCommand(CommandListEntry cle, Dictionary<string, string> input)
         {
-            var rtn = (cle == null) ? new NoMatchCommand() : input.ToObject(cle.CommandType);
-            rtn.CommandResponse = new CommandResponse();
+            var rtn = (cle == null) ? new NoMatchCommand() : input.ToObject(cle.CommandType);           
             return rtn;
         }
 

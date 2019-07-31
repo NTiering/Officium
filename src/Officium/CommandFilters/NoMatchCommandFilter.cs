@@ -7,17 +7,17 @@ namespace Officium.CommandFilters
 {
     public class NoMatchCommandFilter : ICommandFilter
     {
-        public void AfterHandleEvent(ICommand command)
+        public void AfterHandleEvent(ICommand command, ICommandContext context)
         {
            
         }
 
-        public void BeforeHandleEvent(ICommand command)
+        public void BeforeHandleEvent(ICommand command, ICommandContext context)
         {
             
         }
 
-        public bool CanFilter(ICommand command)
+        public bool CanFilter(ICommand command, ICommandContext context)
         {
             return false;
         }

@@ -9,10 +9,9 @@
 
     public static class DictionaryExt
     {
-        //
-
         public static IEnumerable<T> Paginate<T>(this IEnumerable<T> input, PaginationRequest req)
         {
+            if (req == null) return input;
             var rtn = input.Skip(req.PageSize * req.PageNum).Take(req.PageSize);
             return rtn;
         }

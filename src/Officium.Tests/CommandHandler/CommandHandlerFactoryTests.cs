@@ -18,36 +18,38 @@ namespace Officium.Tests.CommandHandler
         [Fact]
         public void NullsDontCauseExceptions()
         {
-            new CommandHandlerFactory(null,null,null).GetCommandHandler(null);
+            new CommandHandlerFactory(null,null,null).GetCommandHandler(null,null);
         }       
 
         [Fact]
         public void SelectsCorrectHandlers()
         {
+            var context = new Mock<ICommandContext>();
             var command = new Mock<ICommand>();
-            command.Setup(x => x.CommandResponse).Returns(new CommandResponse());
+            context.Setup(x => x.CommandResponse).Returns(new CommandResponse());
             var handler = new Mock<ICommandHandler>();
-            handler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            handler.Setup(x => x.CanHandle(It.IsAny<ICommand>(),It.IsAny<ICommandContext>())).Returns(true);
 
-            new CommandHandlerFactory(new[] { handler.Object }, null, null).GetCommandHandler(command.Object).Handle(command.Object);
+            new CommandHandlerFactory(new[] { handler.Object }, null, null).GetCommandHandler(command.Object, context.Object).Handle(command.Object, context.Object);
 
-            handler.Verify(x => x.Handle(command.Object), Times.Once);
+            handler.Verify(x => x.Handle(command.Object, context.Object), Times.Once);
         }
 
         [Fact]
         public void SelectsCorrectValidator()
         {
             var handler = new Mock<ICommandHandler>();
-            handler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            handler.Setup(x => x.CanHandle(It.IsAny<ICommand>(), It.IsAny<ICommandContext>())).Returns(true);
             var command = new Mock<ICommand>();
-            command.Setup(x => x.CommandResponse).Returns(new CommandResponse());
+            var context = new Mock<ICommandContext>();
+            context.Setup(x => x.CommandResponse).Returns(new CommandResponse());
 
             var validator = new Mock<ICommandValidator>();
-            validator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
+            validator.Setup(x => x.CanValidate(It.IsAny<ICommand>(),It.IsAny<ICommandContext>())).Returns(true);
 
-            new CommandHandlerFactory(new[] { handler.Object }, new[] { validator.Object },null).GetCommandHandler(command.Object).Handle(command.Object);
+            new CommandHandlerFactory(new[] { handler.Object }, new[] { validator.Object },null).GetCommandHandler(command.Object, context.Object).Handle(command.Object, context.Object);
 
-            validator.Verify(x => x.Validate(command.Object), Times.Once);
+            validator.Verify(x => x.Validate(command.Object, context.Object), Times.Once);
         }
 
 

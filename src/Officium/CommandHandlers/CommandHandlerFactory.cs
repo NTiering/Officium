@@ -19,20 +19,20 @@
             this.commandFilters = commandFilters.WithDefault(new ICommandFilter[0]);
         }
 
-        public ICommandHandler GetCommandHandler(ICommand command)
+        public ICommandHandler GetCommandHandler(ICommand command, ICommandContext context)
         {
             var validators = commandValidators
-                .Where(x => command != null && x.CanValidate(command))
+                .Where(x => command != null && x.CanValidate(command, context))
                 .ToList();
             validators.Add(new NoMatchCommandValidator());
 
             var filters = commandFilters
-                .Where(x => x.CanFilter(command))
+                .Where(x => x.CanFilter(command, context))
                 .ToList();
             filters.Add(new NoMatchCommandFilter());
 
             var handler = commandHandlers
-                .FirstOrDefault(x => command != null && x.CanHandle(command))
+                .FirstOrDefault(x => command != null && x.CanHandle(command, context))
                 .WithDefault(new NoMatchCommandHandler());
 
             var rtn = new ValidatingCommandHandler(validators, handler, filters);

@@ -6,6 +6,6 @@
     {
         bool TryRegisterCommandType(CommandRequestType commandType, string requestSourceMatch, Type t);
         bool TryRegisterCommandType<T>(CommandRequestType type, string requestSourceMatch) where T : ICommand,new();     
-        ICommand BuildCommand(CommandRequestType type, string requestSource, Dictionary<string,string> input);
+        ICommand BuildCommand(ICommandContext context, Dictionary<string,string> input);
     }
 }

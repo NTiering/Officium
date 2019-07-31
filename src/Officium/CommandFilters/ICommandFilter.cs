@@ -7,8 +7,8 @@ namespace Officium.CommandFilters
 {
     public interface ICommandFilter
     {
-        bool CanFilter(ICommand command);
-        void BeforeHandleEvent(ICommand command);
-        void AfterHandleEvent(ICommand command);
+        bool CanFilter(ICommand command, ICommandContext context);
+        void BeforeHandleEvent(ICommand command, ICommandContext context);
+        void AfterHandleEvent(ICommand command, ICommandContext context);
     }
 }

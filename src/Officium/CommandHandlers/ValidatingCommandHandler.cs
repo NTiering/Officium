@@ -13,7 +13,7 @@
         private readonly ICommandHandler commandHandler;
         private readonly List<ICommandFilter> commandFilters;
 
-        public bool CanHandle(ICommand command) => commandHandler.CanHandle(command);
+        public bool CanHandle(ICommand command, ICommandContext context) => commandHandler.CanHandle(command, context);
         public ValidatingCommandHandler(List<ICommandValidator> commandValidators, ICommandHandler commandHandler, List<ICommandFilter> commandFilters)
         {
             this.commandValidators = commandValidators.WithDefault(new List<ICommandValidator>());
@@ -21,40 +21,40 @@
             this.commandFilters = commandFilters.WithDefault(new List<ICommandFilter>());
         }
 
-        public void Handle(ICommand command)
+        public void Handle(ICommand command, ICommandContext context)
         {
-            RunBeforeFilters(command);
-            AddValidationResults(command);
-            ExecuteHandler(command);
-            RunAfterFilters(command);
+            RunBeforeFilters(command, context);
+            AddValidationResults(command, context);
+            ExecuteHandler(command, context);
+            RunAfterFilters(command, context);
         }
 
-        private void RunAfterFilters(ICommand command)
+        private void RunAfterFilters(ICommand command, ICommandContext context)
         {
-            commandFilters.ForEach(x => x.AfterHandleEvent(command));
+            commandFilters.ForEach(x => x.AfterHandleEvent(command, context));
         }
 
-        private void RunBeforeFilters(ICommand command)
+        private void RunBeforeFilters(ICommand command, ICommandContext context)
         {
-            commandFilters.ForEach(x => x.BeforeHandleEvent(command));
+            commandFilters.ForEach(x => x.BeforeHandleEvent(command, context));
         }
 
-        private void ExecuteHandler(ICommand command)
+        private void ExecuteHandler(ICommand command, ICommandContext context)
         {
-            if (command.CommandResponse.ValidationResults.Any() == false)
+            if (context.CommandResponse.ValidationResults.Any() == false)
             {
-                commandHandler.Handle(command);
+                commandHandler.Handle(command, context);
             }
         }
 
-        private void AddValidationResults(ICommand command)
+        private void AddValidationResults(ICommand command, ICommandContext context)
         {
             var validationResults = new List<IValidationResult>();
             commandValidators.ToList().ForEach(v =>
             {
-                validationResults.AddRange(v.Validate(command));
+                validationResults.AddRange(v.Validate(command, context));
             });
-            command.CommandResponse.ValidationResults = validationResults.Where(x => x != null).ToArray();
+            context.CommandResponse.ValidationResults = validationResults.Where(x => x != null).ToArray();
         }
     }
 }

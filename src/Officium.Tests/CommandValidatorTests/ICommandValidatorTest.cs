@@ -12,20 +12,22 @@ namespace Officium.Tests.CommandValidatorTests
         public void CanBeAdded()
         {
             var command = new MockCommand();
+            var context = new MockCommandContext();
+
             var commandHandler = new Mock<ICommandHandler>();
-            commandHandler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            commandHandler.Setup(x => x.CanHandle(command,context)).Returns(true);
             var commandValidator = new Mock<ICommandValidator>();
-            commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(false);
+            commandValidator.Setup(x => x.CanValidate(command,context)).Returns(false);
 
             var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object },null);
 
-            chf.GetCommandHandler(command)
-                .Handle(command);
+            chf.GetCommandHandler(command,context)
+                .Handle(command,context);
 
-            commandHandler.Verify(x => x.Handle(command), Times.Once);
-            commandHandler.Verify(x => x.CanHandle(command), Times.Once);
-            commandValidator.Verify(x => x.CanValidate(command), Times.Once);
-            commandValidator.Verify(x => x.Validate(command), Times.Never);
+            commandHandler.Verify(x => x.Handle(command, context), Times.Once);
+            commandHandler.Verify(x => x.CanHandle(command, context), Times.Once);
+            commandValidator.Verify(x => x.CanValidate(command, context), Times.Once);
+            commandValidator.Verify(x => x.Validate(command, context), Times.Never);
 
         }
 
@@ -34,20 +36,22 @@ namespace Officium.Tests.CommandValidatorTests
         public void CanBeCalled()
         {
             var command = new MockCommand();
+            var context = new MockCommandContext();
+
             var commandHandler = new Mock<ICommandHandler>();
-            commandHandler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            commandHandler.Setup(x => x.CanHandle(command,context)).Returns(true);
             var commandValidator = new Mock<ICommandValidator>();
-            commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
+            commandValidator.Setup(x => x.CanValidate(command, context)).Returns(true);
 
             var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object }, null);
 
-            chf.GetCommandHandler(command)
-                .Handle(command);
+            chf.GetCommandHandler(command, context)
+                .Handle(command, context);
 
-            commandHandler.Verify(x => x.Handle(command), Times.Once);
-            commandHandler.Verify(x => x.CanHandle(command), Times.Once);
-            commandValidator.Verify(x => x.CanValidate(command), Times.Once);
-            commandValidator.Verify(x => x.Validate(command), Times.Once);
+            commandHandler.Verify(x => x.Handle(command, context), Times.Once);
+            commandHandler.Verify(x => x.CanHandle(command, context), Times.Once);
+            commandValidator.Verify(x => x.CanValidate(command, context), Times.Once);
+            commandValidator.Verify(x => x.Validate(command, context), Times.Once);
 
         }
 
@@ -55,26 +59,32 @@ namespace Officium.Tests.CommandValidatorTests
         public void CanStopHandler()
         {
             var command = new MockCommand();
+            var context = new MockCommandContext();
+
             var commandHandler = new Mock<ICommandHandler>();
-            commandHandler.Setup(x => x.CanHandle(It.IsAny<ICommand>())).Returns(true);
+            commandHandler.Setup(x => x.CanHandle(command, context)).Returns(true);
             var commandValidator = new Mock<ICommandValidator>();
-            commandValidator.Setup(x => x.CanValidate(It.IsAny<ICommand>())).Returns(true);
-            commandValidator.Setup(x => x.Validate(It.IsAny<ICommand>())).Returns(new[] { new Mock<IValidationResult>().Object});
+            commandValidator.Setup(x => x.CanValidate(command, context)).Returns(true);
+            commandValidator.Setup(x => x.Validate(command, context)).Returns(new[] { new Mock<IValidationResult>().Object});
 
             var chf = new CommandHandlerFactory(new[] { commandHandler.Object }, new[] { commandValidator.Object },null);
 
-            chf.GetCommandHandler(command)
-                .Handle(command);
+            chf.GetCommandHandler(command, context)
+                .Handle(command, context);
 
-            commandHandler.Verify(x => x.Handle(command), Times.Never);
-            commandHandler.Verify(x => x.CanHandle(command), Times.Once);
-            commandValidator.Verify(x => x.CanValidate(command), Times.Once);
-            commandValidator.Verify(x => x.Validate(command), Times.Once);
+            commandHandler.Verify(x => x.Handle(command, context), Times.Never);
+            commandHandler.Verify(x => x.CanHandle(command, context), Times.Once);
+            commandValidator.Verify(x => x.CanValidate(command, context), Times.Once);
+            commandValidator.Verify(x => x.Validate(command, context), Times.Once);
 
         }
         class MockCommand : ICommand
         {
-            public MockCommand()
+        }
+
+        class MockCommandContext : ICommandContext
+        {
+            public MockCommandContext()
             {
                 CommandRequestType = CommandRequestType.HttpGet;
                 CommandResponse = new CommandResponse();
@@ -82,6 +92,7 @@ namespace Officium.Tests.CommandValidatorTests
             }
             public CommandRequestType CommandRequestType { get; set; }
             public ICommandResponse CommandResponse { get; set; }
+            public string RequestPath { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }
 }

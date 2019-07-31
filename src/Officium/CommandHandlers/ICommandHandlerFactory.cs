@@ -3,6 +3,6 @@
     using Officium.Commands;
     public interface ICommandHandlerFactory
     {
-        ICommandHandler GetCommandHandler(ICommand command);
+        ICommandHandler GetCommandHandler(ICommand command, ICommandContext context);
     }
 }

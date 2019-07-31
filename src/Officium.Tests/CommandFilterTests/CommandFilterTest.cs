@@ -17,31 +17,38 @@ namespace Officium.Tests.CommandFilterTests
         public void CallsBeforeFilter()
         {
             var command = new MockCommand();
-
+            var context = new MockCommandContext();
             var filter = new Mock<ICommandFilter>();
-            filter.Setup(x => x.CanFilter(command)).Returns(true);
+            filter.Setup(x => x.CanFilter(command, context)).Returns(true);
 
-            new ValidatingCommandHandler(new List<ICommandValidator>(), null, new[] { filter.Object }.ToList()).Handle(command);
+            new ValidatingCommandHandler(new List<ICommandValidator>(), null, new[] { filter.Object }.ToList()).Handle(command, context);
 
-            filter.Verify(x => x.BeforeHandleEvent(command), Times.Once);
+            filter.Verify(x => x.BeforeHandleEvent(command, context), Times.Once);
         }
 
         [Fact]
         public void CallsAfterFilter()
         {
             var command = new MockCommand();
+            var context = new MockCommandContext();
 
             var filter = new Mock<ICommandFilter>();
-            filter.Setup(x => x.CanFilter(command)).Returns(true);
+            filter.Setup(x => x.CanFilter(command, context)).Returns(true);
 
-            new ValidatingCommandHandler(new List<ICommandValidator>(), null, new[] { filter.Object }.ToList()).Handle(command);
+            new ValidatingCommandHandler(new List<ICommandValidator>(), null, new[] { filter.Object }.ToList()).Handle(command, context);
 
-            filter.Verify(x => x.AfterHandleEvent(command), Times.Once);
+            filter.Verify(x => x.AfterHandleEvent(command, context), Times.Once);
         }
 
         class MockCommand : ICommand
         {
-            public MockCommand()
+
+        }
+
+
+        class MockCommandContext : ICommandContext
+        {
+            public MockCommandContext()
             {
                 CommandRequestType = CommandRequestType.HttpGet;
                 CommandResponse = new CommandResponse();
@@ -49,6 +56,8 @@ namespace Officium.Tests.CommandFilterTests
             }
             public CommandRequestType CommandRequestType { get; set; }
             public ICommandResponse CommandResponse { get; set; }
+            public string RequestPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
+
     }
 }

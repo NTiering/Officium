@@ -165,6 +165,7 @@ namespace Officium.Tests.Ext
             public string Name { get; set; }
             public ICommandResponse CommandResponse { get; set; }
             public CommandRequestType CommandRequestType { get; set; }
+            public string RequestPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
     }
 }

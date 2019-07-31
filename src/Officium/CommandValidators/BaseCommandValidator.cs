@@ -6,20 +6,20 @@
     public abstract class BaseCommandValidator<T> : ICommandValidator
        where T : class, ICommand
     {
-        public bool CanValidate(ICommand command)
+        public bool CanValidate(ICommand command, ICommandContext context)
         {
             var rtn = command is T;
             return rtn;
         }
 
-        public IEnumerable<IValidationResult> Validate(ICommand command)
+        public IEnumerable<IValidationResult> Validate(ICommand command, ICommandContext context)
         {
             var cmd = command as T;
             if (cmd == null) return Enumerable.Empty<IValidationResult>();
             var rtn = new List<IValidationResult>();
-            Validate(rtn, cmd);
+            Validate(rtn, cmd, context);
 
-            if (command.CommandResponse.ValidationResults != null)
+            if (context.CommandResponse.ValidationResults != null)
             {
                 rtn.AddRange(rtn);
             }
@@ -38,6 +38,7 @@
 
             public string PropertyValue { get; set; }
         }
-        protected abstract void Validate(List<IValidationResult> rtn, T cmd);
+        protected abstract void Validate(List<IValidationResult> rtn, T cmd, ICommandContext context);
+              
     }
 }
