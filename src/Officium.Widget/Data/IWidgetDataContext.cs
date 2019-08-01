@@ -8,7 +8,7 @@ namespace Officium.Widget.Data
     {
         void Add(IWidget widget);
         IEnumerable<IWidget> GetAll(PaginationRequest req = null);
-        IEnumerable<IWidget> GetAllByName(string name, PaginationRequest req = null);
+        IEnumerable<IWidget> FindByName(string name, PaginationRequest req = null);
         IWidget GetById(string id);
         bool Remove(IWidget widget);
         bool Update(IWidget widget);

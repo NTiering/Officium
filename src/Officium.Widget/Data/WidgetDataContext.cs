@@ -3,7 +3,6 @@ using Officium.Widget.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Officium.Widget.Data
 {
@@ -46,10 +45,10 @@ namespace Officium.Widget.Data
             return t;
         }
 
-        public IEnumerable<IWidget> GetAllByName(string name, PaginationRequest req = null)
+        public IEnumerable<IWidget> FindByName(string name, PaginationRequest req = null)
         {
             var t = widgetStore.Where(x => x.Name == name).Paginate(req);
             return t;
-        }
+        }        
     }
 }

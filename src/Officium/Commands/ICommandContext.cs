@@ -9,5 +9,6 @@ namespace Officium.Commands
         string RequestPath { get; set; }
         CommandRequestType CommandRequestType { get; set; }
         ICommandResponse CommandResponse { get; set; }
+        Dictionary<string, string> Input { get; set; }
     }
 }

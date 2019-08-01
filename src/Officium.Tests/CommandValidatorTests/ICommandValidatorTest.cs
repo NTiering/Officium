@@ -2,6 +2,7 @@
 using Officium.CommandHandlers;
 using Officium.Commands;
 using Officium.CommandValidators;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Officium.Tests.CommandValidatorTests
@@ -80,6 +81,7 @@ namespace Officium.Tests.CommandValidatorTests
         }
         class MockCommand : ICommand
         {
+            public string Id { get; set; }
         }
 
         class MockCommandContext : ICommandContext
@@ -92,6 +94,7 @@ namespace Officium.Tests.CommandValidatorTests
             }
             public CommandRequestType CommandRequestType { get; set; }
             public ICommandResponse CommandResponse { get; set; }
+            public Dictionary<string, string> Input { get; set; }
             public string RequestPath { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }

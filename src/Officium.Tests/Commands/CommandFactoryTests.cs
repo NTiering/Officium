@@ -72,17 +72,7 @@ namespace Officium.Tests.Commands
 
             cmd.ShouldNotBeNull();
         }
-
-        [Fact]
-        public void NoMatchCommandReturnsCorrectCommandRequestType()
-        {
-            var context = new MockCommandContext();
-            var factory = new CommandFactory(true);
-            var cmd = (NoMatchCommand)factory.BuildCommand(context, null);
-
-            cmd.CommandRequestType.ShouldBeEqualTo(CommandRequestType.NoMatch);
-        }
-
+     
         private class MockCommandContext : ICommandContext
         {
             public MockCommandContext()
@@ -91,6 +81,7 @@ namespace Officium.Tests.Commands
                 CommandResponse = new CommandResponse();
                 RequestPath = ".";
             }
+            public Dictionary<string, string> Input { get; set; }
             public CommandRequestType CommandRequestType { get; set; } 
             public ICommandResponse CommandResponse { get; set; }
             public string RequestPath { get; set; }
@@ -98,6 +89,7 @@ namespace Officium.Tests.Commands
 
         private class MockCommand : ICommand
         {
+            public string Id { get; set; }
             public string Name { get; set; }
         }
     }

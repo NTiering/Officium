@@ -21,6 +21,12 @@ namespace Officium.Widget.Commands
     [CommandHandlerRouting(RequestType = CommandRequestType.HttpDelete, Path = "api/v1/widget")]
     public sealed class WidgetRemoveCommand : WidgetCommand { }
 
-    [CommandHandlerRouting(RequestType = CommandRequestType.HttpGet, Path = "api/v1/widget/.")]
+    [CommandHandlerRouting(RequestType = CommandRequestType.HttpGet, Path = "api/v1/widget/[^name]")]
     public sealed class WidgetGetByIdCommand : WidgetCommand { }
+
+    [CommandHandlerRouting(RequestType = CommandRequestType.HttpGet, Path = "api/v1/widget/name/.")]
+    public sealed class WidgetFindAllByNameCommand : ICommand
+    {
+        public string Id { get; set; }
+    }
 }

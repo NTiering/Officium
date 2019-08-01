@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Officium.Commands;
+using System.Collections.Generic;
 
 namespace Officium.Ext
 {
     public static class HttpRequestExt
     {
-        public static ICommandContext GetCommandContext(this HttpRequest request)
+        public static ICommandContext GetCommandContext(this HttpRequest request, Dictionary<string, string> input = null)
         {
             var rtn = new CommandContext
             {
                 CommandRequestType = GetCommandRequestType(request),
                 CommandResponse = new CommandResponse(),
-                RequestPath = request.Path.ToString().ToLower()
+                RequestPath = request.Path.ToString().ToLower(),
+                Input = input ?? new Dictionary<string, string>()
             };
 
             return rtn;
@@ -31,6 +33,7 @@ namespace Officium.Ext
             public string RequestPath { get; set; }
             public CommandRequestType CommandRequestType { get; set; }
             public ICommandResponse CommandResponse { get; set; }
+            public Dictionary<string, string> Input { get; set; }
         }
     }
 }

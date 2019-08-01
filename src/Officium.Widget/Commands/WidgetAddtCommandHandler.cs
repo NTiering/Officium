@@ -1,7 +1,8 @@
-﻿using Officium.Attributes;
-using Officium.CommandHandlers;
+﻿using Officium.CommandHandlers;
 using Officium.Commands;
 using Officium.Widget.Data;
+using Officium.Ext;
+using Officium.Widget.Ext;
 
 namespace Officium.Widget.Commands
 {
@@ -15,8 +16,23 @@ namespace Officium.Widget.Commands
         protected override void HandleCommand(WidgetAddCommand command, ICommandContext context)
         {
             dataContext.Add(command);
-            context.CommandResponse.AddValue("Url", $"{context.RequestPath}/{command.Id}");
-            context.CommandResponse.AddValue("Widget", command);
+            command.AddCommandItem(context);
         }
+    }
+
+    public sealed class WidgetFindByNameCommandHandler : BaseCommandHandler<WidgetFindAllByNameCommand>
+    {
+        private readonly IWidgetDataContext dataContext;
+        public WidgetFindByNameCommandHandler(IWidgetDataContext dataContext)
+        {
+            this.dataContext = dataContext;
+        }
+        protected override void HandleCommand(WidgetFindAllByNameCommand command, ICommandContext context)
+        {
+            var pageination = context.Input.ToPaginationRequest();
+            var name = context.RequestPath.ValueAfter("name");
+            var results = dataContext.FindByName(name, pageination);
+            command.AddCommandItemToValues(context, results, pageination);
+        }       
     }
 }

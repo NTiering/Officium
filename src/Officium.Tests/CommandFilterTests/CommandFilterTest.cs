@@ -42,7 +42,7 @@ namespace Officium.Tests.CommandFilterTests
 
         class MockCommand : ICommand
         {
-
+            public string Id { get; set; }
         }
 
 
@@ -57,6 +57,7 @@ namespace Officium.Tests.CommandFilterTests
             public CommandRequestType CommandRequestType { get; set; }
             public ICommandResponse CommandResponse { get; set; }
             public string RequestPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            public Dictionary<string, string> Input { get ; set ; }
         }
 
     }
