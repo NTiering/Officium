@@ -58,6 +58,8 @@ namespace Officium.Tests.CommandFilterTests
             public ICommandResponse CommandResponse { get; set; }
             public string RequestPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
             public Dictionary<string, string> Input { get ; set ; }
+            public IDictionary<string, string> Headers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            public IAuthResult AuthResult { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
 
     }

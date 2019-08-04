@@ -59,12 +59,7 @@
                 commandListEntries.Add(commandListEntry);
             }
             return !existsAlready;
-        }
-
-        private static void SetCommandType(CommandRequestType commandType, CommandListEntry cle, ICommandContext context)
-        {
-            context.CommandRequestType = (cle == null) ? CommandRequestType.NoMatch : commandType;
-        }
+        }   
 
         private static ICommand MakeCommand(CommandListEntry cle, Dictionary<string, string> input)
         {

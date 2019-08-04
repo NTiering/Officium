@@ -12,6 +12,7 @@ using Officium.Commands;
 using Officium.Startup;
 using Officium.Ext;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Officium.Widget
 {
@@ -36,7 +37,7 @@ namespace Officium.Widget
             ILogger log)
         {
             var input = await AzureTools.GetDataInput(req);
-            var context = req.GetCommandContext(input);
+            var context = req.GetCommandContext(input, req.Headers.ToDictionary(x=>x.Key, x=>x.Value.FirstOrDefault()));
             var command = AzureTools.GetCommand(_commandFactory, context, input);
             AzureTools.ExecuteCommandHandler(_commandHandlerFactory, command, context);
 

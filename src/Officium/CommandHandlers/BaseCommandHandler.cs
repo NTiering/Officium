@@ -8,7 +8,12 @@
         public virtual bool CanHandle(ICommand command, ICommandContext context)
         {
             var rtn = command is T;
-            return rtn;
+            return rtn && CanHandleRequest(command,context);
+        }
+
+        protected virtual bool CanHandleRequest(ICommand command, ICommandContext context)
+        {
+            return true;
         }
 
         public void Handle(ICommand command, ICommandContext context)

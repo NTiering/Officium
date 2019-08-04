@@ -12,9 +12,7 @@ namespace Officium.Widget
     public class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
-        {
-            //builder.Services.AddHttpClient();
-
+        {           
             builder.Services.AddSingleton(typeof(IWidgetDataContext), typeof(WidgetDataContext));
 
             void register(Type tInterface, Type tType)

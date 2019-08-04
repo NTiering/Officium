@@ -33,19 +33,19 @@ namespace Officium.Widget.Data
             return true;
         }
 
-        public IWidget GetById(string id)
+        public IWidget FindOneById(string id)
         {
             var t = widgetStore.FirstOrDefault(x => x.Id == id);
             return t;
         }
 
-        public IEnumerable<IWidget> GetAll(PaginationRequest req = null)
+        public IEnumerable<IWidget> FindAll(PaginationRequest req = null)
         {
             var t = widgetStore.AsQueryable().Paginate(req);
             return t;
         }
 
-        public IEnumerable<IWidget> FindByName(string name, PaginationRequest req = null)
+        public IEnumerable<IWidget> FindAllByName(string name, PaginationRequest req = null)
         {
             var t = widgetStore.Where(x => x.Name == name).Paginate(req);
             return t;

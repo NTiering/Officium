@@ -85,6 +85,8 @@ namespace Officium.Tests.Commands
             public CommandRequestType CommandRequestType { get; set; } 
             public ICommandResponse CommandResponse { get; set; }
             public string RequestPath { get; set; }
+            public IDictionary<string, string> Headers { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+            public IAuthResult AuthResult { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
 
         private class MockCommand : ICommand

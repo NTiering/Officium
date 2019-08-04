@@ -10,5 +10,9 @@ namespace Officium.Commands
         CommandRequestType CommandRequestType { get; set; }
         ICommandResponse CommandResponse { get; set; }
         Dictionary<string, string> Input { get; set; }
+        IDictionary<string, string> Headers { get; set; }
+        IAuthResult AuthResult { get; set; }
+
+
     }
 }

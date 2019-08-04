@@ -96,6 +96,8 @@ namespace Officium.Tests.CommandValidatorTests
             public ICommandResponse CommandResponse { get; set; }
             public Dictionary<string, string> Input { get; set; }
             public string RequestPath { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+            public IDictionary<string, string> Headers { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+            public IAuthResult AuthResult { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         }
     }
 }
