@@ -10,28 +10,4 @@ namespace Officium.Core.Handlers
     {
         Task Handle(RequestContext requestContext, ResponseContent responseContent);
     }
-
-    public interface IBeforeEveryRequest : IBaseHandler
-    {
-    }
-
-    public interface IAfterEveryRequest : IBaseHandler
-    {
-    }
-
-    public interface IOnError : IBaseHandler
-    {
-    }
-
-    public interface IOnNotHandled : IBaseHandler
-    {
-    }
-
-    public interface IRequestHandler : IBaseHandler
-    {
-    }
-
-    public interface IValidationHandler : IBaseHandler
-    {
-    }
 }
