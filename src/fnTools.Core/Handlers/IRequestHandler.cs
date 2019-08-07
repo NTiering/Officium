@@ -1,6 +1,10 @@
-﻿namespace Officium.Core.Handlers
+﻿using Officium.Core.ReqRes;
+using System.Threading.Tasks;
+
+namespace Officium.Core.Handlers
 {
-    public interface IRequestHandler : IBaseHandler
+    public interface IRequestHandler 
     {
+        void Handle(RequestContext requestContext, ResponseContent responseContent);
     }
 }

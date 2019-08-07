@@ -2,6 +2,6 @@
 {
     public class RequestContext
     {
-               
+        public string Path { get; set; }
     }
 }

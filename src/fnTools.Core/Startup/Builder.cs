@@ -1,4 +1,7 @@
-﻿using System;
+﻿using fnTools.Core.Handlers;
+using fnTools.Core.Startup;
+using Officium.Core.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,44 +9,40 @@ namespace Officium.Core.Startup
 {
     public class Builder
     {
-        public Builder BeforeEveryRequest<T>(object o)
+        private readonly FunctionHandler functionHandler = new FunctionHandler();
+
+        public Builder Add(IBeforeEveryRequest req)
         {
+            functionHandler.Add(req);
             return this;
         }
 
-        public Builder AfterEveryRequest<T>(object o)
+        public Builder Add(IAfterEveryRequest req)
         {
+            functionHandler.Add(req);
             return this;
         }
 
-        public Builder OnError<T>(object o)
+        public Builder Add(IOnError req)
         {
+            functionHandler.Add(req);
             return this;
         }
-
-        public Builder OnNotHandled<T>(object o)
+        public Builder Add(Method method, string pathSelector, IRequestHandler handler)
         {
+            functionHandler.Add(method, pathSelector, handler);
             return this;
         }
-
-        public Builder AddHandler<T>(string path, object method)
+        public Builder Add(Method method, string pathSelector, IValidationHandler handler)
         {
+            functionHandler.Add(method, pathSelector, handler);
             return this;
         }
-
-        public Builder AddValidator<T>(string path, object method)
+        public FunctionHandler GetHandler()
         {
-            return this;
+            return functionHandler;
         }
 
-        public Builder AddOpenApi()
-        {
-            return this;
-        }
-
-        public object ProcessRequest(object o)
-        {
-            return null;
-        }
+        
     }
 }

@@ -1,6 +1,11 @@
-﻿namespace Officium.Core.Handlers
+﻿using Officium.Core.ReqRes;
+using System;
+using System.Threading.Tasks;
+
+namespace Officium.Core.Handlers
 {
-    public interface IOnError : IBaseHandler
+    public interface IOnError 
     {
+        Task Handle(RequestContext requestContext, ResponseContent responseContent, Exception exception);
     }
 }

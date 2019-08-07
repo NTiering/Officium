@@ -8,6 +8,6 @@ namespace Officium.Core.Handlers
 {
     public interface IBaseHandler
     {
-        Task Handle(RequestContext requestContext, ResponseContent responseContent);
+        
     }
 }
