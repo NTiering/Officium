@@ -85,44 +85,19 @@ namespace fnTools.Core.Startup
         }
     }
 
-    public class ValidationFunctionHandler
-    {
-        private readonly List<ValidationHandlerWrapper> handlers = new List<ValidationHandlerWrapper>();
-
-        public void Add(Method method, string pathSelector, IValidationHandler handler)
-        {
-            handlers.Add(new ValidationHandlerWrapper { Method = method, PathSelector = pathSelector, Handler = handler });
-        }
-
-        public void Handle(RequestContext request, ResponseContent response)
-        {
-            handlers
-                .Where(x => CanHandle(x, request))
-                .ToList()
-                .ForEach(handler => handler.Handle(request, response));
-        }
-
-        private bool CanHandle(ValidationHandlerWrapper handlerWrapper, RequestContext request)
-        {
-            return true;
-        }
-
-        private class ValidationHandlerWrapper
-        {
-            public Method Method { get; set; }
-            public string PathSelector { get; set; }
-            public IValidationHandler Handler { get; set; }
-            public void Handle(RequestContext request, ResponseContent response) => Handler?.Handle(request, response);
-        }
-    }
-
-    public class FunctionHandler
+    public class FunctionHandler : IFunctionHandler
     {
         private readonly BeforeFunctionHandler beforeFunctions = new BeforeFunctionHandler();
         private readonly AfterFunctionHandler afterFunctions = new AfterFunctionHandler();
         private readonly OnErrorHandler onErrorFunctions = new OnErrorHandler();
         private readonly RequestFunctionHandler requestFunctions = new RequestFunctionHandler();
-        private readonly ValidationFunctionHandler validationFunctions = new ValidationFunctionHandler();
+        private readonly IValidationFunctionHandler validationFunctions;
+
+        public FunctionHandler(IValidationFunctionHandler validationFunctions)
+        {
+            this.validationFunctions = validationFunctions;
+        }
+
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
             try
@@ -135,18 +110,18 @@ namespace fnTools.Core.Startup
             catch (Exception ex)
             {
                 onErrorFunctions.Handle(request, response, ex);
-            }            
+            }
         }
 
-        public void Add(IBeforeEveryRequest req) 
+        public void Add(IBeforeEveryRequest req)
             => beforeFunctions.Add(req);
-        public void Add(IAfterEveryRequest req) 
+        public void Add(IAfterEveryRequest req)
             => afterFunctions.Add(req);
-        public void Add(IOnError req) 
+        public void Add(IOnError req)
             => onErrorFunctions.Add(req);
         public void Add(Method method, string pathSelector, IRequestHandler handler)
             => requestFunctions.Add(method, pathSelector, handler);
-        public void Add(Method method, string pathSelector, IValidationHandler handler)
-            => validationFunctions.Add(method, pathSelector, handler);
+        //public void Add(Method method, string pathSelector, IValidationHandler handler)
+        //   => validationFunctions.Add(method, pathSelector, handler);
     }
 }

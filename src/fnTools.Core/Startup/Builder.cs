@@ -1,5 +1,6 @@
 ﻿using fnTools.Core.Handlers;
 using fnTools.Core.Startup;
+using Microsoft.Extensions.DependencyInjection;
 using Officium.Core.Handlers;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,12 @@ namespace Officium.Core.Startup
 {
     public class Builder
     {
-        private readonly FunctionHandler functionHandler = new FunctionHandler();
+        private readonly IFunctionHandler functionHandler;
+
+        public Builder(IFunctionHandler functionHandler, IServiceCollection ser)
+        {
+            this.functionHandler = functionHandler;
+        }
 
         public Builder Add(IBeforeEveryRequest req)
         {
@@ -33,12 +39,12 @@ namespace Officium.Core.Startup
             functionHandler.Add(method, pathSelector, handler);
             return this;
         }
-        public Builder Add(Method method, string pathSelector, IValidationHandler handler)
-        {
-            functionHandler.Add(method, pathSelector, handler);
-            return this;
-        }
-        public FunctionHandler GetHandler()
+        //public Builder Add(Method method, string pathSelector, IValidationHandler handler)
+        //{
+        //    functionHandler.Add(method, pathSelector, handler);
+        //    return this;
+        //}
+        public IFunctionHandler GetHandler()
         {
             return functionHandler;
         }
