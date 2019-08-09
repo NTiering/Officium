@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Officium.Core.Handlers
 {
-    public interface IAfterEveryRequest : IBaseHandler
+    public interface IAfterEveryRequestHandler 
     {
         Task Handle(RequestContext requestContext, ResponseContent responseContent);
     }

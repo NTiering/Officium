@@ -1,6 +1,6 @@
 ﻿using Officium.Core.ReqRes;
 
-namespace fnTools.Core.Startup
+namespace fnTools.Core.HandlerCollection
 {
     public interface IValidationFunctionHandler
     {

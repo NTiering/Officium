@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Officium.Core.Handlers
 {
-    public interface IOnNotHandled 
+    public interface IOnNotHandledHandler 
     {
         Task Handle(RequestContext requestContext, ResponseContent responseContent);
     }

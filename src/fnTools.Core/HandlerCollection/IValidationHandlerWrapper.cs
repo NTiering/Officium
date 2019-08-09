@@ -2,11 +2,11 @@
 using Officium.Core.Handlers;
 using Officium.Core.ReqRes;
 
-namespace fnTools.Core.Startup
+namespace fnTools.Core.HandlerCollection
 {
     public interface IValidationHandlerWrapper
     {
-        IValidationHandler Handler { get; }
+        IValidationHandlerFunction Handler { get; }
         Method Method { get; }
         string PathSelector { get; }
 

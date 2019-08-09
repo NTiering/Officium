@@ -14,7 +14,7 @@ namespace fnTool.Test.Startup
         [Fact]
         public void BeforeRequestIsCalled()
         {
-            var handler = new Mock<IBeforeEveryRequest>();
+            var handler = new Mock<IBeforeEveryRequestHandler>();
             var request = new RequestContext();
             var response = new ResponseContent();
 
@@ -26,7 +26,7 @@ namespace fnTool.Test.Startup
         [Fact]
         public void AfterRequestIsCalled()
         {
-            var handler = new Mock<IAfterEveryRequest>();
+            var handler = new Mock<IAfterEveryRequestHandler>();
             var request = new RequestContext();
             var response = new ResponseContent();
 
@@ -38,9 +38,9 @@ namespace fnTool.Test.Startup
         [Fact]
         public void OnErrorIsCalled()
         {
-            var errorHandler = new Mock<IOnError>();
+            var errorHandler = new Mock<IOnErrorHandler>();
             var exception = new Exception();
-            var handler = new Mock<IAfterEveryRequest>();
+            var handler = new Mock<IAfterEveryRequestHandler>();
             handler.Setup(x => x.Handle(It.IsAny<RequestContext>(), It.IsAny<ResponseContent>())).Throws(exception);
             var request = new RequestContext();
             var response = new ResponseContent();

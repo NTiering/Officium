@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Officium.Core.Handlers
 {
-    public interface IOnError 
+    public interface IOnErrorHandler 
     {
         Task Handle(RequestContext requestContext, ResponseContent responseContent, Exception exception);
     }

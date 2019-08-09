@@ -3,98 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using fnTools.Core.HandlerCollection;
 using fnTools.Core.Handlers;
 using Officium.Core.Handlers;
 using Officium.Core.ReqRes;
 
 namespace fnTools.Core.Startup
 {
-    //
-    public class OnErrorHandler
+    public class FunctionHandler 
     {
-        private readonly List<IOnError> handlers = new List<IOnError>();
-
-        public void Add(IOnError handler)
-        {
-            handlers.Add(handler);
-        }
-
-        public void Handle(RequestContext request, ResponseContent response, Exception ex)
-        {
-            handlers.ForEach(x => x.Handle(request, response, ex));
-        }
-    }
-
-    public class AfterFunctionHandler
-    {
-        private readonly List<IAfterEveryRequest> handlers = new List<IAfterEveryRequest>();
-
-        public void Add(IAfterEveryRequest handler)
-        {
-            handlers.Add(handler);
-        }
-
-        public void Handle(RequestContext request, ResponseContent response)
-        {
-            handlers.ForEach(handler => handler.Handle(request, response));
-        }
-    }
-    public class BeforeFunctionHandler
-    {
-        private readonly List<IBeforeEveryRequest> handlers = new List<IBeforeEveryRequest>();
-
-        public void Add(IBeforeEveryRequest handler)
-        {
-            handlers.Add(handler);
-        }
-
-        public void Handle(RequestContext request, ResponseContent response)
-        {
-            handlers.ForEach(handler => handler.Handle(request, response));
-        }
-    }
-
-    public class RequestFunctionHandler
-    {
-        private readonly List<RequestHandlerWrapper> handlers = new List<RequestHandlerWrapper>();
-
-        public void Add(Method method, string pathSelector, IRequestHandler handler)
-        {
-            handlers.Add(new RequestHandlerWrapper { Method = method, PathSelector = pathSelector, Handler = handler });
-        }
-
-        public void Handle(RequestContext request, ResponseContent response)
-        {
-            handlers
-                .Where(x=> CanHandle(x,request))
-                .ToList()
-                .ForEach(handler => handler.Handle(request, response));
-        }
-
-        private bool CanHandle(RequestHandlerWrapper handlerWrapper, RequestContext request)
-        {
-            return true;
-        }
-
-        private class RequestHandlerWrapper
-        {
-            public Method Method { get; set; }
-            public string PathSelector { get; set; }
-            public IRequestHandler Handler { get; set; }
-            public void Handle(RequestContext request, ResponseContent response) => Handler?.Handle(request, response);
-        }
-    }
-
-    public class FunctionHandler : IFunctionHandler
-    {
-        private readonly BeforeFunctionHandler beforeFunctions = new BeforeFunctionHandler();
-        private readonly AfterFunctionHandler afterFunctions = new AfterFunctionHandler();
-        private readonly OnErrorHandler onErrorFunctions = new OnErrorHandler();
-        private readonly RequestFunctionHandler requestFunctions = new RequestFunctionHandler();
+        private readonly IBeforeFunctionHandlerCollection beforeFunctions;
+        private readonly IAfterFunctionHandlerCollection afterFunctions;
+        private readonly IOnErrorHandlerCollection onErrorFunctions;
+        private readonly IRequestFunctionHandlerCollection requestFunctions;
         private readonly IValidationFunctionHandler validationFunctions;
 
-        public FunctionHandler(IValidationFunctionHandler validationFunctions)
+        public FunctionHandler(
+            IBeforeFunctionHandlerCollection beforeFunctions,
+            IAfterFunctionHandlerCollection afterFunctions,
+            IOnErrorHandlerCollection onErrorFunctions,
+            IRequestFunctionHandlerCollection requestFunctions,
+            IValidationFunctionHandler validationFunctions
+            )
         {
+            this.beforeFunctions = beforeFunctions;
+            this.afterFunctions = afterFunctions;
+            this.onErrorFunctions = onErrorFunctions;
+            this.requestFunctions = requestFunctions;
             this.validationFunctions = validationFunctions;
         }
 
@@ -112,15 +47,14 @@ namespace fnTools.Core.Startup
                 onErrorFunctions.Handle(request, response, ex);
             }
         }
-
-        public void Add(IBeforeEveryRequest req)
-            => beforeFunctions.Add(req);
-        public void Add(IAfterEveryRequest req)
-            => afterFunctions.Add(req);
-        public void Add(IOnError req)
-            => onErrorFunctions.Add(req);
-        public void Add(Method method, string pathSelector, IRequestHandler handler)
-            => requestFunctions.Add(method, pathSelector, handler);
+        
+       // => beforeFunctions.Add(req);
+       // public void Add(IAfterEveryRequestHandler req)
+      //      => afterFunctions.Add(req);
+     //   public void Add(IOnErrorHandler req)
+     //      => onErrorFunctions.Add(req);
+      //  public void Add(Method method, string pathSelector, IRequestHandlerFunction handler)
+     //       => requestFunctions.Add(method, pathSelector, handler);
         //public void Add(Method method, string pathSelector, IValidationHandler handler)
         //   => validationFunctions.Add(method, pathSelector, handler);
     }

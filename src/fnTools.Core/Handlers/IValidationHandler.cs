@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 
 namespace Officium.Core.Handlers
 {
-    public interface IValidationHandler : IBaseHandler
+    public interface IValidationHandlerFunction 
     {
+        Method Method { get; }
+        string PathSelector { get; set; }
         void Handle(RequestContext requestContext, ResponseContent response);
     }
 }
