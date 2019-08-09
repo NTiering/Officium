@@ -17,8 +17,7 @@ namespace Officium.Core.Startup
 
         public HandlerRegisterHelper(Type t, IServiceCollection services)
         {
-            this.handlerType = typeof(t);
-            this.services = services;
+          
         }
 
         public bool TryAdd(Type t)
