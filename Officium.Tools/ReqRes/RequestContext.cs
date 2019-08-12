@@ -12,6 +12,7 @@ namespace Officium.Tools.ReqRes
                 
         }
 
+        internal Dictionary<string, string> BodyParams { get; set; }
         internal Dictionary<string, StringValues> QueryParams { get; set; }
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }

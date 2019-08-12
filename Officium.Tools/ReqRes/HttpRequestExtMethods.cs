@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using Officium.Tools.Handlers;
 
 namespace Officium.Tools.ReqRes
@@ -15,10 +17,18 @@ namespace Officium.Tools.ReqRes
             {
                 RequestMethod = ToRequestMethod(httpRequest.Method),
                 Path = httpRequest.Path.ToString(),
-                QueryParams = httpRequest.Query.ToDictionary(x=>x.Key, x=>x.Value)
+                QueryParams = httpRequest.Query.ToDictionary(x=>x.Key, x=>x.Value),
+                BodyParams = GetBodyParams(httpRequest)
             };
         }
-      
+
+        private static Dictionary<string,string> GetBodyParams(HttpRequest req)
+        {
+            string requestBody = new StreamReader(req.Body).ReadToEnd();
+            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(requestBody);
+            return data;
+        }
+
         private static RequestMethod ToRequestMethod(string method)
         {
             var m = method.ToUpper().Trim();
