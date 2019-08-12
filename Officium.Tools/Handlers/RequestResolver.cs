@@ -13,8 +13,9 @@ namespace Officium.Tools.Handlers
             this.handlers = handlers;
         }
 
-        public void Execute(RequestContext req, ResponseContent res)
+        public ResponseContent Execute(RequestContext req)
         {
+            var res = new ResponseContent { StatusCode = 200 };
             try
             {
                 ExecuteHandlers(req, res, HandlerOrder.BeforeEveryRequest);
@@ -31,6 +32,8 @@ namespace Officium.Tools.Handlers
                 req.Exception = ex;
                 ExecuteHandlers(req, res, HandlerOrder.OnError);
             }
+
+            return res;
         }
 
         private int ExecuteHandlers(RequestContext req, ResponseContent res, HandlerOrder handlerOrder)

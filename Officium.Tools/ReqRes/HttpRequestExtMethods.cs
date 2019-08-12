@@ -16,10 +16,7 @@ namespace Officium.Tools.ReqRes
                 Path = httpRequest.Path.ToString()
             };
         }
-        public static ResponseContent MakeResponseContent(this HttpRequest httpRequest)
-        {
-            return new ResponseContent { StatusCode = 200 };
-        }
+      
         private static RequestMethod ToRequestMethod(string method)
         {
             var m = method.ToUpper().Trim();

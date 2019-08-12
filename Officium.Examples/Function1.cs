@@ -31,9 +31,7 @@ namespace Officium.Examples
             ILogger log)
         {
             var reqContext = req.MakeRequestContext();
-            var resContext = req.MakeResponseContent();
-
-            requestResolver.Execute(reqContext, resContext);
+            var resContext = requestResolver.Execute(reqContext);
 
             // log.LogInformation("C# HTTP trigger function processed a request.");
 
