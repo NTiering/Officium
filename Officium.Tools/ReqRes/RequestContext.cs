@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Primitives;
 using Officium.Tools.Handlers;
 
 namespace Officium.Tools.ReqRes
@@ -10,6 +11,8 @@ namespace Officium.Tools.ReqRes
         {
                 
         }
+
+        internal Dictionary<string, StringValues> QueryParams { get; set; }
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Exception Exception { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Officium.Tools.Handlers;
@@ -13,7 +14,8 @@ namespace Officium.Tools.ReqRes
             return new RequestContext
             {
                 RequestMethod = ToRequestMethod(httpRequest.Method),
-                Path = httpRequest.Path.ToString()
+                Path = httpRequest.Path.ToString(),
+                QueryParams = httpRequest.Query.ToDictionary(x=>x.Key, x=>x.Value)
             };
         }
       
