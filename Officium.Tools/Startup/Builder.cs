@@ -47,22 +47,41 @@ namespace Officium.Tools.Handlers
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.ValidateRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector)));
+            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.ValidateRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector),MakePathParams(pathSelector)));
             return this;
         }
         public Builder OnRequest<T>(RequestMethod method, string pathSelector)
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector)));
+            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector), MakePathParams(pathSelector)));
             return this;
         }
-
+        public void Dispose()
+        {
+            IRequestResolver resolver = new RequestResolver(handlerWrappers.ToArray());
+            services.AddSingleton(resolver);
+        }
         private void AddToServices<T>() where T : class, IHandler
         {
+            if (services.Contains(new ServiceDescriptor(typeof(T), typeof(T), ServiceLifetime.Singleton))) return;
             services.AddSingleton<T,T>();
         }
-
+        private static Dictionary<string, int> MakePathParams(string pathSelector)
+        {
+            var rtn = new Dictionary<string, int>();
+            int count = 0;
+            foreach (var i in pathSelector.Split("//"))
+            {
+                if (i.StartsWith("{") && i.EndsWith("}"))
+                {
+                    var key = i.Replace("{", string.Empty).Replace("}", string.Empty);
+                    rtn[key] = count;
+                }
+                count++;
+            }
+            return rtn;
+        }
         private Func<RequestContext, ResponseContent, bool> MakeSelectorAction(RequestMethod method, string pathSelector)
         {
             return (req, res) =>
@@ -72,11 +91,6 @@ namespace Officium.Tools.Handlers
                     routeMatcher.Matches(pathSelector, req.Path);
                 return rtn;
             };
-        }
-        public void Dispose()
-        {
-            IRequestResolver resolver = new RequestResolver(handlerWrappers.ToArray());
-            services.AddSingleton(resolver);
         }
         private static Func<RequestContext, ResponseContent, bool> AlwaysAction
         {

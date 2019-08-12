@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Officium.Tools.Handlers;
 
 namespace Officium.Tools.ReqRes
@@ -9,9 +10,10 @@ namespace Officium.Tools.ReqRes
         {
                 
         }
-        public RequestMethod RequestMethod { get; set; }
-        public string Path { get; set; }
-        public Exception Exception { get; set; }
-        public dynamic Result { get; set; }
+        internal RequestMethod RequestMethod { get; set; }
+        internal string Path { get; set; }
+        internal Exception Exception { get; set; }
+        internal dynamic Result { get; set; }
+        internal Dictionary<string, int> PathParams { get; set; }
     }
 }
