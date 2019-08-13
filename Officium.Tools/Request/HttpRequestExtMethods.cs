@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Officium.Tools.Handlers;
 
-namespace Officium.Tools.ReqRes
+namespace Officium.Tools.Request
 {
     public static class HttpRequestExtMethods
     {

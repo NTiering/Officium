@@ -1,8 +1,9 @@
-﻿using Officium.Tools.ReqRes;
+﻿using Officium.Tools.Handlers;
+using Officium.Tools.Response;
 using System;
 using System.Linq;
 
-namespace Officium.Tools.Handlers
+namespace Officium.Tools.Request
 {
     public class RequestResolver : IRequestResolver
     {

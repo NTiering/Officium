@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Officium.Tools.Helpers;
-using Officium.Tools.ReqRes;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
 using System;
 using System.Collections.Generic;
 

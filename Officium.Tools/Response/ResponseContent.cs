@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Officium.Tools.ReqRes
+namespace Officium.Tools.Response
 {
     public class ResponseContent
     {

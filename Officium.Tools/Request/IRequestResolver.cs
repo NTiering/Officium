@@ -1,6 +1,6 @@
-﻿using Officium.Tools.ReqRes;
+﻿using Officium.Tools.Response;
 
-namespace Officium.Tools.Handlers
+namespace Officium.Tools.Request
 {
     public interface IRequestResolver
     {

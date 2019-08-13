@@ -1,9 +1,7 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Officium.Tools.Handlers;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Officium.Tools.Request;
 
 [assembly: FunctionsStartup(typeof(Officium.Examples.Startup))]
 namespace Officium.Examples
@@ -16,14 +14,10 @@ namespace Officium.Examples
             {
                 b.OnRequest<HelloWorldHandler>(
                     RequestMethod.GET,
-                    "/api/Function1");
+                    "/api/HelloWorld");
             }
 
-            // builder.Services.AddHttpClient();
-            //builder.Services.AddSingleton((s) => {
-            //    return new CosmosClient(Environment.GetEnvironmentVariable("COSMOSDB_CONNECTIONSTRING"));
-            //});
-            //builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
+            builder.Services.AddHttpClient();
         }
     }
 }

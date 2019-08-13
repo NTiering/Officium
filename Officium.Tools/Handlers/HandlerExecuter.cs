@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Officium.Tools.ReqRes;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
 using System;
 
 namespace Officium.Tools.Handlers
@@ -30,13 +31,13 @@ namespace Officium.Tools.Handlers
 
         private IHandler GetHandler(IServiceCollection services)
         {
-            var sp = services.BuildServiceProvider();
-            var h = sp.GetService<T>();
-            if (h == null)
+            var provider = services.BuildServiceProvider();
+            var hdlr = provider.GetService<T>();
+            if (hdlr == null)
             {
                 throw new InvalidOperationException($"Unable to construct type of {typeof(T).FullName}");
             }
-            return h;
+            return hdlr;
         }
     }
 }

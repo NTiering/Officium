@@ -1,4 +1,5 @@
-﻿using Officium.Tools.ReqRes;
+﻿using Officium.Tools.Request;
+using Officium.Tools.Response;
 
 namespace Officium.Tools.Handlers
 {

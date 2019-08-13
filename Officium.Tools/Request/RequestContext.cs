@@ -4,13 +4,12 @@ using System.Linq;
 using Microsoft.Extensions.Primitives;
 using Officium.Tools.Handlers;
 
-namespace Officium.Tools.ReqRes
+namespace Officium.Tools.Request
 {
     public class RequestContext
     {
         internal RequestContext()
-        {
-                
+        {                
         }
 
         internal Dictionary<string, string> BodyParams { get; set; }
@@ -18,22 +17,12 @@ namespace Officium.Tools.ReqRes
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Dictionary<string, int> PathParams { get; set; }
-
         public string GetValue(string key)
         {
             var rtn = string.Empty;
-            if (TryGetPathValue(PathParams, Path, key, ref rtn))
-            {
-                return rtn;
-            }
-            if (TryGetQueryValue(QueryParams, key, ref rtn))
-            {
-                return rtn;
-            }
-            if (TryGetBodyValue(BodyParams, key, ref rtn))
-            {
-                return rtn;
-            }
+            if (TryGetPathValue(PathParams, Path, key, ref rtn)) return rtn;
+            else if (TryGetQueryValue(QueryParams, key, ref rtn)) return rtn;
+            else if (TryGetBodyValue(BodyParams, key, ref rtn)) return rtn;
             return rtn;
         }
 
