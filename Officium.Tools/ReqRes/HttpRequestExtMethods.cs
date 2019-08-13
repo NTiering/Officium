@@ -17,9 +17,14 @@ namespace Officium.Tools.ReqRes
             {
                 RequestMethod = ToRequestMethod(httpRequest.Method),
                 Path = httpRequest.Path.ToString(),
-                QueryParams = httpRequest.Query.ToDictionary(x=>x.Key, x=>x.Value),
+                QueryParams = GetQueryParams(httpRequest),
                 BodyParams = GetBodyParams(httpRequest)
             };
+        }
+
+        private static Dictionary<string, string> GetQueryParams(HttpRequest httpRequest)
+        {
+            return httpRequest.Query.ToDictionary(x => x.Key.ToLower(), x => x.Value.FirstOrDefault()?? string.Empty);
         }
 
         private static Dictionary<string,string> GetBodyParams(HttpRequest req)

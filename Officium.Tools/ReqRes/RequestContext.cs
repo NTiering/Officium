@@ -14,7 +14,7 @@ namespace Officium.Tools.ReqRes
         }
 
         internal Dictionary<string, string> BodyParams { get; set; }
-        internal Dictionary<string, StringValues> QueryParams { get; set; }
+        internal Dictionary<string, string> QueryParams { get; set; }
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Dictionary<string, int> PathParams { get; set; }
@@ -46,7 +46,7 @@ namespace Officium.Tools.ReqRes
             return true;
         }
 
-        private static bool TryGetQueryValue(Dictionary<string, StringValues> queryParams, string key, ref string rtn)
+        private static bool TryGetQueryValue(Dictionary<string, string> queryParams, string key, ref string rtn)
         {
             if (queryParams == null) return false;
             if (queryParams.Any() == false) return false;
