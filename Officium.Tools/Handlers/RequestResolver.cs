@@ -29,7 +29,7 @@ namespace Officium.Tools.Handlers
             }
             catch (Exception ex)
             {
-                req.Exception = ex;
+                res.Exception = ex;
                 ExecuteHandlers(req, res, HandlerOrder.OnError);
             }
 
