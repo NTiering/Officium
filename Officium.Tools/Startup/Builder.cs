@@ -17,7 +17,7 @@ namespace Officium.Tools.Handlers
             this.services = services;
         }
         public Builder BeforeEveryRequest<T>()
-            where T : class,IHandler
+            where T : class, IHandler
         {
             AddToServices<T>();
             handlerWrappers.Add(new HandlerWrapper(HandlerOrder.BeforeEveryRequest, new HandlerExecuter<T>(services), AlwaysAction));
