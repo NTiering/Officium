@@ -47,12 +47,11 @@ namespace Officium.Examples
         }
     }
 
-    public class HelloWorldHandler : Officium.Tools.Handlers.IHandler
+    public class HelloWorldHandler : IHandler
     {
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            response.Result = "Hello world";
-            response.StatusCode = 200;
+            response.Result = "Hello " + request.GetValue("name");
         }
     }
 }
