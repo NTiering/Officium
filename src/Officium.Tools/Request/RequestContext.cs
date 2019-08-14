@@ -18,8 +18,7 @@ namespace Officium.Tools.Request
         internal RequestContext()
         {                
         }
-
-
+        
         public string GetValue(string key)
         {
             var rtn = string.Empty;
