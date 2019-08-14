@@ -6,8 +6,9 @@ using Microsoft.Extensions.Logging;
 using Officium.Tools.Handlers;
 using Officium.Tools.Request;
 using Officium.Tools.Response;
+using Officium.Tools.Helpers;
 
-namespace Officium.Examples
+namespace Officium._1Examples
 {
     public class HelloWorldFunction
     {
@@ -36,7 +37,7 @@ namespace Officium.Examples
     {
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            response.Result = "Hello " + request.GetValue("name");
+            response.Result = new { Message = "Hello " + request.GetValue("name").WithDefault("Stranger ! add a name param to the url") };
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Officium.Tools.Handlers
     {
         private readonly List<IHandlerWrapper> handlerWrappers = new List<IHandlerWrapper>();
         private readonly IServiceCollection services;
-        private readonly static RouteMatcher routeMatcher = new RouteMatcher();
+        private readonly static IRouteMatcher routeMatcher = new RouteMatcher();
         public Builder(IServiceCollection services)
         {
             this.services = services;

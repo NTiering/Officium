@@ -9,11 +9,11 @@ namespace Officium.Tools.Response
     {
         internal ResponseContent()
         {
-
+            Result = new { };
         }
         public readonly List<ValidationError> ValidationError = new List<ValidationError>();
         public int StatusCode { get; set; }
-        public dynamic Result { get; set; }
+        public object Result { get; set; }
         public Exception Exception { get; set; }
         public ActionResult GetActionResult()
         {
