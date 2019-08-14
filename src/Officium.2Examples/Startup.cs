@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Officium.Tools.Handlers;
 using Officium.Tools.Request;
 
-[assembly: FunctionsStartup(typeof(Officium.Examples.Startup))]
-namespace Officium.Examples
+[assembly: FunctionsStartup(typeof(Officium._2Examples.Startup))]
+namespace Officium._2Examples
 {
     public class Startup : FunctionsStartup
     {
@@ -14,7 +14,10 @@ namespace Officium.Examples
             {
                 b.OnRequest<HelloWorldHandler>(
                     RequestMethod.GET,
-                    "/api/HelloWorld");
+                    "/api/BeforeAndAfterEveryRequest"); 
+
+                b.BeforeEveryRequest<BeforeHandler>();
+                b.AfterEveryRequest<AfterHandler>();
             }
 
             builder.Services.AddHttpClient();
