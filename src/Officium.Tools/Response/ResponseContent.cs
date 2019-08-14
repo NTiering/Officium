@@ -17,18 +17,9 @@ namespace Officium.Tools.Response
         public Exception Exception { get; set; }
         public ActionResult GetActionResult()
         {
-            if (Exception != null)
-            {
-                return new BadRequestObjectResult(Exception.Message);
-            }
-            else if (ValidationError != null && ValidationError.Any())
-            {
-                return new BadRequestObjectResult(ValidationError);
-            }
-            else
-            {
-                return new OkObjectResult(Result){ StatusCode = StatusCode };
-            }
+            if (Exception != null)return new BadRequestObjectResult(Exception.Message);
+            if (ValidationError != null && ValidationError.Any())return new BadRequestObjectResult(ValidationError);
+            return new OkObjectResult(Result){ StatusCode = StatusCode};         
         }
     }
 }
