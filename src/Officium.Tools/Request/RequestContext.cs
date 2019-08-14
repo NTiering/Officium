@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Primitives;
-using Officium.Tools.Handlers;
 
 namespace Officium.Tools.Request
 {
     public class RequestContext
     {
-        internal RequestContext()
-        {                
-        }
-
         internal Dictionary<string, string> BodyParams { get; set; }
         internal Dictionary<string, string> QueryParams { get; set; }
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Dictionary<string, int> PathParams { get; set; }
+
+        public readonly Guid Id = Guid.NewGuid(); 
+
+        internal RequestContext()
+        {                
+        }
+
+
         public string GetValue(string key)
         {
             var rtn = string.Empty;

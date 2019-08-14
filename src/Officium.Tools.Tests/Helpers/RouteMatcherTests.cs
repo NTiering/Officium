@@ -2,7 +2,7 @@
 using FluentAssert;
 using Xunit;
 
-namespace Officium.Tools.UnitTests.Helpers
+namespace Officium.Tools.Tests.Helpers
 {
     public class RouteMatcherTests
     {
