@@ -4,6 +4,7 @@ using Officium.Tools.Request;
 using Officium.Tools.Response;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Officium.Tools.Handlers
 {
@@ -72,7 +73,7 @@ namespace Officium.Tools.Handlers
         {
             var rtn = new Dictionary<string, int>();
             int count = 0;
-            foreach (var i in pathSelector.Split("//"))
+            foreach (var i in pathSelector.Split("/"))
             {
                 if (i.StartsWith("{") && i.EndsWith("}"))
                 {
