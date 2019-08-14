@@ -18,5 +18,14 @@ namespace Officium.Tools.Helpers
             var rtn = s.Split("/").Where(x => string.IsNullOrWhiteSpace(x) == false).ToArray();
             return rtn;
         }
+
+        public static bool IsNullOrWhitespace(this string s)
+        {
+            return string.IsNullOrWhiteSpace(s);
+        }
+        public static bool IsNotNullOrWhitespace(this string s)
+        {
+            return !string.IsNullOrWhiteSpace(s);
+        }
     }
 }
