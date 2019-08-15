@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Officium.Tools.Request;
-
-namespace Officium.Tools.Helpers
+﻿namespace Officium.Tools.Helpers
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Officium.Tools.Request;
+
     public static class ServiceCollectionExtMethods
     {
         public static void AddInternalServices(this IServiceCollection collection)

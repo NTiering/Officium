@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Officium.Tools.Request
+﻿namespace Officium.Tools.Request
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class ValueExtractor : IValueExtractor
     {
         public bool TryGetPathValue(Dictionary<string, int> pathParams, string path, string key, ref string rtn)

@@ -1,79 +1,84 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Officium.Tools.Helpers;
-using Officium.Tools.Request;
-using Officium.Tools.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Officium.Tools.Handlers
+﻿namespace Officium.Tools.Handlers
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Officium.Tools.Helpers;
+    using Officium.Tools.Request;
+    using Officium.Tools.Response;
+    using System;
+    using System.Collections.Generic;
+
     public class Builder : IDisposable
     {
-        private readonly List<IHandlerWrapper> handlerWrappers = new List<IHandlerWrapper>();
-        private readonly IServiceCollection services;
-        private readonly static IRouteMatcher routeMatcher = new RouteMatcher();
-        private readonly static IPathParamExtractor pathParamExtractor = new PathParamExtractor(); 
+        private readonly List<IHandlerWrapper> _handlerWrappers = new List<IHandlerWrapper>();
+        private readonly IServiceCollection _services;
+        private static readonly IRouteMatcher _routeMatcher = new RouteMatcher();
+        private static readonly IPathParamExtractor _pathParamExtractor = new PathParamExtractor();
+
         public Builder(IServiceCollection services)
         {
-            this.services = services;
-            
+            _services = services;            
         }
+
         public Builder BeforeEveryRequest<T>()
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.BeforeEveryRequest, new HandlerExecuter<T>(services), AlwaysAction));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.BeforeEveryRequest, new HandlerExecuter<T>(_services), AlwaysAction));
             return this;
         }
+
         public Builder AfterEveryRequest<T>()
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.AfterEveryRequest, new HandlerExecuter<T>(services), AlwaysAction));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.AfterEveryRequest, new HandlerExecuter<T>(_services), AlwaysAction));
             return this;
         }
+
         public Builder OnError<T>()
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnError, new HandlerExecuter<T>(services), AlwaysAction));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnError, new HandlerExecuter<T>(_services), AlwaysAction));
             return this;
         }
+
         public Builder OnNotHandled<T>()
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnNotHandled, new HandlerExecuter<T>(services), AlwaysAction));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnNotHandled, new HandlerExecuter<T>(_services), AlwaysAction));
             return this;
         }
+
         public Builder ValidateRequest<T>(RequestMethod method, string pathSelector)
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.ValidateRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector),MakePathParams(pathSelector)));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.ValidateRequest, new HandlerExecuter<T>(_services), MakeSelectorAction(method, pathSelector),MakePathParams(pathSelector)));
             return this;
         }
+
         public Builder OnRequest<T>(RequestMethod method, string pathSelector)
             where T : class, IHandler
         {
             AddToServices<T>();
-            handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnRequest, new HandlerExecuter<T>(services), MakeSelectorAction(method, pathSelector), MakePathParams(pathSelector)));
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnRequest, new HandlerExecuter<T>(_services), MakeSelectorAction(method, pathSelector), MakePathParams(pathSelector)));
             return this;
         }
         public void Dispose()
         {
-            IRequestResolver resolver = new RequestResolver(handlerWrappers.ToArray());
-            services.AddSingleton(resolver);
+            IRequestResolver resolver = new RequestResolver(_handlerWrappers.ToArray());
+            _services.AddSingleton(resolver);
         }
         private void AddToServices<T>() where T : class, IHandler
         {
-            if (services.Contains(new ServiceDescriptor(typeof(T), typeof(T), ServiceLifetime.Singleton))) return;
-            services.AddSingleton<T,T>();
+            if (_services.Contains(new ServiceDescriptor(typeof(T), typeof(T), ServiceLifetime.Singleton))) return;
+            _services.AddSingleton<T,T>();
         }
         private static Dictionary<string, int> MakePathParams(string pathSelector)
         {
-            var rtn = pathParamExtractor.MakePathParams(pathSelector);
+            var rtn = _pathParamExtractor.MakePathParams(pathSelector);
             return rtn;            
         }
         private Func<RequestContext, ResponseContent, bool> MakeSelectorAction(RequestMethod method, string pathSelector)
@@ -82,7 +87,7 @@ namespace Officium.Tools.Handlers
             {
                 var rtn =
                     req.RequestMethod == method &&
-                    routeMatcher.Matches(pathSelector, req.Path);
+                    _routeMatcher.Matches(pathSelector, req.Path);
                 return rtn;
             };
         }

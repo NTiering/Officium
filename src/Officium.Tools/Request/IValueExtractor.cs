@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace Officium.Tools.Request
+﻿namespace Officium.Tools.Request
 {
+    using System.Collections.Generic;
     public interface IValueExtractor
     {
         bool TryGetPathValue(Dictionary<string, int> pathParams, string path, string key, ref string rtn);

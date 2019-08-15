@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Security.Claims;
-
-namespace Officium.Tools.Helpers
+﻿namespace Officium.Tools.Helpers
 {
+    using System.Linq;
+    using System.Security.Claims;
     public static class ClaimsIdentityExtMethods
     {
         public static bool HasClaim(this ClaimsIdentity claimsIdentity, Claim claim)

@@ -1,18 +1,16 @@
-﻿using Officium.Tools.Handlers;
-using Officium.Tools.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Officium.Tools.Request
+﻿namespace Officium.Tools.Request
 {
+    using Officium.Tools.Handlers;
+    using Officium.Tools.Response;
+    using System;
+    using System.Linq;
     public class RequestResolver : IRequestResolver
     {
-        private readonly IHandlerWrapper[] handlers;
+        private readonly IHandlerWrapper[] _handlers;
 
         public RequestResolver(IHandlerWrapper[] handlers)
         {
-            this.handlers = handlers;
+            _handlers = handlers;
         }
 
         public ResponseContent Execute(RequestContext req)
@@ -40,13 +38,12 @@ namespace Officium.Tools.Request
 
         private int ExecuteHandlers(RequestContext req, ResponseContent res, HandlerOrder handlerOrder)
         {
-            var chosen = handlers
+            var chosen = _handlers
                 .Where(x => x.Order == handlerOrder)
                 .Where(x => x.CanHandleRequest(req, res))
                 .ToList();
 
             chosen.ForEach(x => x.HandleRequest(req, res));
-
             return chosen.Count();
         }
     }

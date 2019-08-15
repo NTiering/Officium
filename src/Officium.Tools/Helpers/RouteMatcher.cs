@@ -1,19 +1,21 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Officium.Tools.Helpers
+﻿namespace Officium.Tools.Helpers
 {
+    using System.Text.RegularExpressions;
+
     public class RouteMatcher : IRouteMatcher
     {
-        private readonly Regex bracketRemoveRegex;
+        private readonly Regex _bracketRemoveRegex;
+
         public RouteMatcher()
         {
-            bracketRemoveRegex = new Regex(@"\{.+}");
+            _bracketRemoveRegex = new Regex(@"\{.+}");
         }
+
         public bool Matches(string source, string candidate)
         {
             var s = source.RemoveTrailingAndLeadingSlashes().ToUpper().Replace(@"/", @"\/"); ;
             var c = candidate.RemoveTrailingAndLeadingSlashes().ToUpper();
-            var regexString = "^" + bracketRemoveRegex.Replace(s, ".+") + "$";
+            var regexString = "^" + _bracketRemoveRegex.Replace(s, ".+") + "$";
             var matcher = new Regex(regexString);
             var rtn = matcher.IsMatch(c);
             return rtn;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Officium.Tools.Helpers
+﻿namespace Officium.Tools.Helpers
 {
     internal static class StringExtMethods
     {
@@ -13,19 +8,9 @@ namespace Officium.Tools.Helpers
             return rtn;
         }
 
-        public static string[] SplittIntoParts(this string s)
-        {
-            var rtn = s.Split("/").Where(x => string.IsNullOrWhiteSpace(x) == false).ToArray();
-            return rtn;
-        }
-
         public static bool IsNullOrWhitespace(this string s)
         {
             return string.IsNullOrWhiteSpace(s);
-        }
-        public static bool IsNotNullOrWhitespace(this string s)
-        {
-            return !string.IsNullOrWhiteSpace(s);
-        }
+        }      
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Officium.Tools.Handlers
+﻿namespace Officium.Tools.Handlers
 {
+    using System.Collections.Generic;
+
     public class PathParamExtractor : IPathParamExtractor
     {
         public Dictionary<string, int> MakePathParams(string pathSelector)

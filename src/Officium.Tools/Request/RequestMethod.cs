@@ -5,7 +5,11 @@
         GET,
         POST,
         PUT,
-        DELETE,
+        DELETE,       
+        CONNECT,
+        OPTIONS,
+        TRACE,
+        PATCH,
         NOTMAPPED
     }
 }

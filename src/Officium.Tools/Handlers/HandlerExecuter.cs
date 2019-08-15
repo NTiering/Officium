@@ -1,32 +1,30 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Officium.Tools.Request;
-using Officium.Tools.Response;
-using System;
-
-namespace Officium.Tools.Handlers
+﻿namespace Officium.Tools.Handlers
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Officium.Tools.Request;
+    using Officium.Tools.Response;
+    using System;
     internal class HandlerExecuter<T> : IHandler
         where T : IHandler
     {
-        private readonly IServiceCollection services;
-        private IHandler handler = null;
+        private readonly IServiceCollection _services;
+        private IHandler _handler = null;
+
         public HandlerExecuter(IServiceCollection services)
         {
-            this.services = services;
+            _services = services;
         }
 
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            if (handler == null)
+            if (_handler == null)
             {
                 lock (this)
                 {
-                    handler = GetHandler(services);
+                    _handler = GetHandler(_services);
                 }
             }
-
-            handler.HandleRequest(request, response);
-
+            _handler.HandleRequest(request, response);
         }
 
         private IHandler GetHandler(IServiceCollection services)

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-
-namespace Officium.Tools.Request
+﻿namespace Officium.Tools.Request
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Security.Claims;
     public class RequestContext : IRequestContext
     {
         private readonly Dictionary<string, string> internalParams = new Dictionary<string, string>();
@@ -15,7 +13,6 @@ namespace Officium.Tools.Request
         internal Dictionary<string, int> PathParams { get; set; }
         internal Dictionary<string, string> HeadersParams { get; set; }
         public ClaimsIdentity Identity { get; set; }
-
         public readonly Guid Id = Guid.NewGuid();
         private readonly IValueExtractor valueExtractor;
 
