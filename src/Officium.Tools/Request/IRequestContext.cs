@@ -4,5 +4,7 @@
     {
         string GetValue(string key);
         void SetValue(string key, string value);
+        string GetHeaderValue(string key);
+
     }
 }

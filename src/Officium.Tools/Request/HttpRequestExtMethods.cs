@@ -16,11 +16,18 @@ namespace Officium.Tools.Request
         {
             return new RequestContext(new ValueExtractor())
             {
+                HeadersParams = GetHeaderDictionary(httpRequest),
                 RequestMethod = ToRequestMethod(httpRequest.Method),
                 Path = httpRequest.Path.ToString(),
                 QueryParams = GetQueryParams(httpRequest),
                 BodyParams = GetBodyParams(httpRequest)
             };
+        }
+
+        private static Dictionary<string,string> GetHeaderDictionary(HttpRequest httpRequest)
+        {
+            var rtn = httpRequest.Headers.ToDictionary(x => x.Key, x => x.Value.FirstOrDefault() ?? string.Empty);
+            return rtn;
         }
 
         private static Dictionary<string, string> GetQueryParams(HttpRequest httpRequest)

@@ -12,6 +12,7 @@ namespace Officium.Tools.Request
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Dictionary<string, int> PathParams { get; set; }
+        internal Dictionary<string, string> HeadersParams { get; set; }
 
         public readonly Guid Id = Guid.NewGuid();
         private readonly IValueExtractor valueExtractor;
@@ -19,6 +20,13 @@ namespace Officium.Tools.Request
         internal RequestContext(IValueExtractor valueExtractor)
         {
             this.valueExtractor = valueExtractor;
+        }
+
+        public string GetHeaderValue(string key)
+        {
+            var rtn = string.Empty;
+            if (TryGetValue(HeadersParams, key, ref rtn)) return rtn;
+            return string.Empty;
         }
 
         public string GetValue(string key)
@@ -33,7 +41,7 @@ namespace Officium.Tools.Request
 
         private bool TryGetValue(Dictionary<string, string> paramsDict, string key, ref string rtn)
         {
-            var result = valueExtractor.TryGetValue(paramsDict,  key, ref  rtn);
+            var result = valueExtractor.TryGetValue(paramsDict, key, ref rtn);
             return result;
         }
 
