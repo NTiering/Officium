@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Officium.Tools.Handlers;
+using Officium.Tools.Helpers;
 
 namespace Officium.Tools.Request
 {
@@ -24,18 +25,23 @@ namespace Officium.Tools.Request
 
         private static Dictionary<string, string> GetQueryParams(HttpRequest httpRequest)
         {
-            return httpRequest.Query.ToDictionary(x => x.Key.ToLower(), x => x.Value.FirstOrDefault()?? string.Empty);
+
+            return httpRequest.Query == null ?
+                new Dictionary<string,string>():
+                httpRequest.Query.ToDictionary(x => x.Key.ToLower(), x => x.Value.FirstOrDefault()?? string.Empty);
         }
 
-        private static Dictionary<string,string> GetBodyParams(HttpRequest req)
+        private static Dictionary<string,string> GetBodyParams(HttpRequest httpRequest)
         {
-            string requestBody = new StreamReader(req.Body).ReadToEnd();
+            if (httpRequest.Body == null) return new Dictionary<string, string>();
+            string requestBody = new StreamReader(httpRequest.Body).ReadToEnd();
             var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(requestBody);
             return data;
         }
 
         private static RequestMethod ToRequestMethod(string method)
         {
+            if(method.IsNullOrWhitespace()) return RequestMethod.NOTMAPPED;
             var m = method.ToUpper().Trim();
             if (m == "POST") return RequestMethod.POST;
             if (m == "DELETE") return RequestMethod.DELETE;
