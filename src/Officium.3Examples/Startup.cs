@@ -14,10 +14,6 @@ namespace Officium._3Examples
             {
                 b.BeforeEveryRequest<PreVariblesHandler>();
 
-                //b.OnRequest<VariblesHandler>(
-                //    RequestMethod.GET,
-                //    "/api/Varibles/");
-
                 b.OnRequest<VariblesHandler>(
                     RequestMethod.GET,
                     "/api/Varibles/{somename}");

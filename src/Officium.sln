@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Tools.Tests", "Off
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.3Examples", "Officium.3Examples\Officium.3Examples.csproj", "{C40D3425-EE39-41A5-B7C0-9E547414F72A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.4Examples", "Officium.4Examples\Officium.4Examples.csproj", "{8E942824-3965-402A-87FE-4098CE42570A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C40D3425-EE39-41A5-B7C0-9E547414F72A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C40D3425-EE39-41A5-B7C0-9E547414F72A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C40D3425-EE39-41A5-B7C0-9E547414F72A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E942824-3965-402A-87FE-4098CE42570A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E942824-3965-402A-87FE-4098CE42570A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E942824-3965-402A-87FE-4098CE42570A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E942824-3965-402A-87FE-4098CE42570A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
