@@ -4,21 +4,23 @@ using System.Linq;
 
 namespace Officium.Tools.Request
 {
-    public class RequestContext
+    public class RequestContext : IRequestContext
     {
-        private Dictionary<string, string> internalParams = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> internalParams = new Dictionary<string, string>();
         internal Dictionary<string, string> BodyParams { get; set; }
         internal Dictionary<string, string> QueryParams { get; set; }
         internal RequestMethod RequestMethod { get; set; }
         internal string Path { get; set; }
         internal Dictionary<string, int> PathParams { get; set; }
 
-        public readonly Guid Id = Guid.NewGuid(); 
+        public readonly Guid Id = Guid.NewGuid();
+        private readonly IValueExtractor valueExtractor;
 
-        internal RequestContext()
-        {                
+        internal RequestContext(IValueExtractor valueExtractor)
+        {
+            this.valueExtractor = valueExtractor;
         }
-        
+
         public string GetValue(string key)
         {
             var rtn = string.Empty;
@@ -29,30 +31,21 @@ namespace Officium.Tools.Request
             return rtn;
         }
 
-        private static bool TryGetValue(Dictionary<string, string> paramsDict, string key, ref string rtn)
+        private bool TryGetValue(Dictionary<string, string> paramsDict, string key, ref string rtn)
         {
-            if (paramsDict == null) return false;
-            if (paramsDict.Any() == false) return false;
-            if (paramsDict.ContainsKey(key.ToLower()) == false) return false;
-            rtn = paramsDict[key.ToLower()];
-            return true;
+            var result = valueExtractor.TryGetValue(paramsDict,  key, ref  rtn);
+            return result;
         }
 
         public void SetValue(string key, string value)
         {
-            internalParams[key.ToLower()] = value; 
+            internalParams[key.ToLower()] = value;
         }
 
-        private static bool TryGetPathValue(Dictionary<string, int> pathParams, string path, string key, ref string rtn)
+        private bool TryGetPathValue(Dictionary<string, int> pathParams, string path, string key, ref string rtn)
         {
-            if (pathParams == null) return false;
-            if (pathParams.Any() == false) return false;
-            if (pathParams.ContainsKey(key) == false) return false;
-            var index = pathParams[key];
-            var pathParts = path.Split("/");
-            if (pathParts.Length < index) return false;
-            rtn = pathParts[index];
-            return true;
+            var result = valueExtractor.TryGetPathValue(pathParams, path, key, ref rtn);
+            return result;
         }
     }
 }

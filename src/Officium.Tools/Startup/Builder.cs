@@ -16,6 +16,7 @@ namespace Officium.Tools.Handlers
         public Builder(IServiceCollection services)
         {
             this.services = services;
+            
         }
         public Builder BeforeEveryRequest<T>()
             where T : class, IHandler

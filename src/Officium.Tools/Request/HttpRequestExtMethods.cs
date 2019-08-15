@@ -14,7 +14,7 @@ namespace Officium.Tools.Request
     {
         public static RequestContext MakeRequestContext(this HttpRequest httpRequest)
         {
-            return new RequestContext
+            return new RequestContext(new ValueExtractor())
             {
                 RequestMethod = ToRequestMethod(httpRequest.Method),
                 Path = httpRequest.Path.ToString(),
@@ -25,7 +25,6 @@ namespace Officium.Tools.Request
 
         private static Dictionary<string, string> GetQueryParams(HttpRequest httpRequest)
         {
-
             return httpRequest.Query == null ?
                 new Dictionary<string,string>():
                 httpRequest.Query.ToDictionary(x => x.Key.ToLower(), x => x.Value.FirstOrDefault()?? string.Empty);
