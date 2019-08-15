@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Officium.Tools.Handlers;
 using FluentAssert;
@@ -11,7 +9,7 @@ using Officium.Tools.Response;
 
 namespace Officium.Tools.Tests.Startup
 {
-    
+
     public class BuilderTests
     {
         [Fact]
@@ -26,10 +24,42 @@ namespace Officium.Tools.Tests.Startup
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(x => x.Contains(It.IsAny<ServiceDescriptor>())).Returns(false);
             using (var builder = new Builder(serviceCollection.Object))
-            {                
+            {
                 builder.BeforeEveryRequest<MockHandler>();
             }
+        }
 
+        [Fact]
+        public void AfterEveryRequestRegistersHandler()
+        {
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(x => x.Contains(It.IsAny<ServiceDescriptor>())).Returns(false);
+            using (var builder = new Builder(serviceCollection.Object))
+            {
+                builder.AfterEveryRequest<MockHandler>();
+            }
+        }
+
+        [Fact]
+        public void OnErrorRegistersHandler()
+        {
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(x => x.Contains(It.IsAny<ServiceDescriptor>())).Returns(false);
+            using (var builder = new Builder(serviceCollection.Object))
+            {
+                builder.OnError<MockHandler>();
+            }
+        }
+
+        [Fact]
+        public void OnRequestRegistersHandler()
+        {
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(x => x.Contains(It.IsAny<ServiceDescriptor>())).Returns(false);
+            using (var builder = new Builder(serviceCollection.Object))
+            {
+                builder.OnRequest<MockHandler>(RequestMethod.NOTMAPPED,"");
+            }
         }
 
         class MockHandler : IHandler

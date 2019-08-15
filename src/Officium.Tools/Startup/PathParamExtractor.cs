@@ -8,7 +8,7 @@ namespace Officium.Tools.Handlers
         {
             var rtn = new Dictionary<string, int>();
             int count = 0;
-            foreach (var i in pathSelector.Split("/"))
+            foreach (var i in (pathSelector ?? string.Empty).Split("/"))
             {
                 if (i.StartsWith("{") && i.EndsWith("}"))
                 {
