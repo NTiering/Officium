@@ -11,10 +11,10 @@ using System;
 
 namespace Officium._7Examples
 {
-    public class ErrorFunction
+    public class NoHandlerFunction
     {
         private readonly IRequestResolver requestResolver;
-        public ErrorFunction(IRequestResolver requestResolver)
+        public NoHandlerFunction(IRequestResolver requestResolver)
         {
             this.requestResolver = requestResolver;
         }

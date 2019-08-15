@@ -14,10 +14,8 @@ namespace Officium._7Examples
 
             using (var b = new Builder(builder.Services))
             {
-                b.OnNotHandled<NoHandlerFoundHandler>();
-              
+                b.OnNotHandled<NoHandlerFoundHandler>();              
             }           
         }
     }
-
 }
