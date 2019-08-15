@@ -13,6 +13,7 @@ namespace Officium.Tools.Handlers
         private readonly List<IHandlerWrapper> handlerWrappers = new List<IHandlerWrapper>();
         private readonly IServiceCollection services;
         private readonly static IRouteMatcher routeMatcher = new RouteMatcher();
+        private readonly static IPathParamExtractor pathParamExtractor = new PathParamExtractor(); 
         public Builder(IServiceCollection services)
         {
             this.services = services;
@@ -72,18 +73,8 @@ namespace Officium.Tools.Handlers
         }
         private static Dictionary<string, int> MakePathParams(string pathSelector)
         {
-            var rtn = new Dictionary<string, int>();
-            int count = 0;
-            foreach (var i in pathSelector.Split("/"))
-            {
-                if (i.StartsWith("{") && i.EndsWith("}"))
-                {
-                    var key = i.Replace("{", string.Empty).Replace("}", string.Empty);
-                    rtn[key] = count;
-                }
-                count++;
-            }
-            return rtn;
+            var rtn = pathParamExtractor.MakePathParams(pathSelector);
+            return rtn;            
         }
         private Func<RequestContext, ResponseContent, bool> MakeSelectorAction(RequestMethod method, string pathSelector)
         {
