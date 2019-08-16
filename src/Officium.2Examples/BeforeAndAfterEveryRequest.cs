@@ -64,5 +64,4 @@ namespace Officium._2Examples
         public string Message { get; set; }
         public string AfterMessage { get; set; }
     }
-
 }

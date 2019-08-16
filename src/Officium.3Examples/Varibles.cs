@@ -10,10 +10,10 @@ using Officium.Tools.Helpers;
 
 namespace Officium._3Examples
 {
-    public class HelloWorldFunction
+    public class VariablesFunction
     {
         private readonly IRequestResolver requestResolver;
-        public HelloWorldFunction(IRequestResolver requestResolver)
+        public VariablesFunction(IRequestResolver requestResolver)
         {
             this.requestResolver = requestResolver;
         }

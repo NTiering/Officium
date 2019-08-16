@@ -21,7 +21,7 @@
 
     <description>Extends Azure functions to support routing to handlers, auth, validation and more </description>
 
-    <copyright>Copyright ©2019 </copyright>
+    <copyright>Copyright ©2019 </copyright>  
 
     <tags>Azure, Azurefunctions, serverless</tags>
 
