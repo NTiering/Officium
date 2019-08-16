@@ -37,7 +37,7 @@ namespace Officium._3Examples
     {
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            request.SetValue("Greeting", "Hello");
+            request.SetInternalValue("Greeting", "Hello");
         }
     }
 
@@ -49,7 +49,7 @@ namespace Officium._3Examples
                 new
                 { 
                     Id = request.Id,
-                    Greeting = request.GetValue("greeting"),
+                    Greeting = request.GetInternalValue("greeting"),
                     Name = request.GetValue("somename")
                 };
         }

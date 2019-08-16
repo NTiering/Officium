@@ -30,9 +30,8 @@
 
         public string GetValue(string key)
         {
-            var rtn = string.Empty;
-            if (TryGetValue(internalParams, key, ref rtn)) return rtn;
-            else if (TryGetPathValue(PathParams, Path, key, ref rtn)) return rtn;
+            var rtn = string.Empty;          
+            if (TryGetPathValue(PathParams, Path, key, ref rtn)) return rtn;
             else if (TryGetValue(QueryParams, key, ref rtn)) return rtn;
             else if (TryGetValue(BodyParams, key, ref rtn)) return rtn;
             return rtn;
@@ -44,10 +43,19 @@
             return result;
         }
 
-        public void SetValue(string key, string value)
+        public void SetInternalValue(string key, string value)
         {
             internalParams[key.ToLower()] = value;
+
         }
+
+        public string GetInternalValue(string key)
+        {
+            string value = null;
+            var rtn = TryGetValue(internalParams, key, ref value);
+            return rtn ? value : string.Empty;
+        }
+         
 
         private bool TryGetPathValue(Dictionary<string, int> pathParams, string path, string key, ref string rtn)
         {

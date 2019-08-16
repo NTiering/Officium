@@ -43,7 +43,7 @@ namespace Officium._4Examples
         }
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            request.SetValue("Greeting", textProvider.GetGreeting() );
+            request.SetInternalValue("Greeting", textProvider.GetGreeting() );
         }
     }
 

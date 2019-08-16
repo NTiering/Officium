@@ -3,8 +3,8 @@
     public interface IRequestContext
     {
         string GetValue(string key);
-        void SetValue(string key, string value);
+        void SetInternalValue(string key, string value);
+        string GetInternalValue(string key);
         string GetHeaderValue(string key);
-
     }
 }
