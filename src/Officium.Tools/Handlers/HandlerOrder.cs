@@ -4,9 +4,10 @@
     {
         OnNotHandled = -100,
         OnError = -200,
-        BeforeEveryRequest = 100,
-        ValidateRequest = 200,
-        OnRequest = 300,
-        AfterEveryRequest = 400
+        Authorise = 100,
+        BeforeEveryRequest = 200,
+        ValidateRequest = 300,
+        OnRequest = 400,
+        AfterEveryRequest = 500
     }
 }

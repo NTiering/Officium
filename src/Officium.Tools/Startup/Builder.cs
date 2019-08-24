@@ -18,12 +18,20 @@
         {
             _services = services;            
         }
-
+        
         public Builder BeforeEveryRequest<T>()
             where T : class, IHandler
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.BeforeEveryRequest, new HandlerExecuter<T>(_services), AlwaysAction));
+            return this;
+        }
+        public Builder Authorise<T>()
+            where T : class, IHandler
+        {
+            AddToServices<T>();
+            _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.Authorise, new HandlerExecuter<T>(_services), AlwaysAction));
+
             return this;
         }
 

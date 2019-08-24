@@ -18,6 +18,7 @@
             var res = new ResponseContent { StatusCode = 200 };
             try
             {
+                ExecuteHandlers(req, res, HandlerOrder.Authorise);
                 ExecuteHandlers(req, res, HandlerOrder.BeforeEveryRequest);
                 ExecuteHandlers(req, res, HandlerOrder.ValidateRequest);
                 var reqCount = ExecuteHandlers(req, res, HandlerOrder.OnRequest);
