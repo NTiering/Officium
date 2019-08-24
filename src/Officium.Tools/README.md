@@ -363,21 +363,266 @@ then the request on that path WILL NOT BE CALLED. before and after handlers are 
  
 
 ## Variables 
-Variables can be accessed in any handlers from the request context 
+Form, query and path variables can be accessed in any handlers from the request context 
+
+**Form variables**
+
+These values are come from a http form, usually (but not always) from a HTTP Post or Put 
+
+**Query variables**
+
+These variables come from the end of a url , after a question mark (?) E.G. name=Timmy
+
+**Path variables**
+
+These variables form part of the url E.G /api/students/{id}
+
+**Internal variables**
+
+These are a way to pass values between handlers
+
+
 
 Edit **Startup.cs**
 ```
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+
+[assembly: FunctionsStartup(typeof(Officium._3Examples.Startup))]
+namespace Officium._3Examples
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {  
+            using (var b = new Builder(builder.Services))
+            {
+                b.BeforeEveryRequest<PreVariablesHandler>();
+
+                b.OnRequest<VariablesHandler>(
+                    RequestMethod.GET,
+                    "/api/Variables/{somename}");
+            }
+
+            builder.Services.AddHttpClient();
+        }
+    }
+}
 
 ```
 Edit **Function1.cs**
 ```
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
+using Officium.Tools.Helpers;
+
+namespace Officium._3Examples
+{
+    public class VariablesFunction
+    {
+        private readonly IRequestResolver requestResolver;
+        public VariablesFunction(IRequestResolver requestResolver)
+        {
+            this.requestResolver = requestResolver;
+        }
+
+        [FunctionName("Variables")]
+        public IActionResult Run(
+            [HttpTrigger(
+            AuthorizationLevel.Function, "get", "post",
+            Route = "Variables/{n?}")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogDebug($"Executing Variables function");
+            var reqContext = req.MakeRequestContext();
+            var resContext = requestResolver.Execute(reqContext);
+            return resContext.GetActionResult();
+        }
+    }
+
+    public class PreVariablesHandler : IHandler
+    {
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            request.SetInternalValue("Greeting", "Hello");
+        }
+    }
+
+    public class VariablesHandler : IHandler
+    {
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            response.Result =
+                new
+                { 
+                    Id = request.Id,
+                    Greeting = request.GetInternalValue("greeting"),
+                    Name = request.GetValue("somename")
+                };
+        }
+    }
+}
 
 ```
+Now start yout project and point a browser to your endpoint 
+(somethnig like http://localhost:7071/api/Variables/Timmy)
+
+and you should see something like 
+
+{"id":"56be7acd-2cf4-42eb-934c-241d59316232","greeting":"Hello","name":"Timmy"}
+
+**IMPORTANT CONCEPTS**
+
+You can get values using **request.GetValue("SomeValue")** if a value is not present , an empty string is returned.
+
+Values can be passed from one handler to another using 
+**request.SetInternalValue("Greeting", "Hello")** and **request.GetInternalValue("Greeting")** 
+Internal values cannot be passed in from outside of the serverless function.
+
 ## Dependency Injection / IoC
-Dependency injection using the existing IoC framework is supported 
+Dependency injection using the existing IoC framework is supported.  
+
+Edit **Startup.cs**
 ```
+using System;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+
+[assembly: FunctionsStartup(typeof(Officium._4Examples.Startup))]
+namespace Officium._4Examples
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {  
+            using (var b = new Builder(builder.Services))
+            {
+                b.BeforeEveryRequest<PreIoCHandler>();
+
+                b.OnRequest<IoCHandler>(
+                    RequestMethod.GET,
+                    "/api/IoC/");
+            }
+
+            // add our service here 
+            builder.Services.AddSingleton<ITextProvider, TextProvider>();
+            builder.Services.AddHttpClient();
+        }
+    }
+
+    public interface ITextProvider
+    {
+        string GetGreeting();
+        string GetName();
+    }
+
+    public class TextProvider : ITextProvider
+    {
+        public string GetGreeting()
+        {
+            return "Hello";
+        }
+
+        public string GetName()
+        {
+            return "Timmy";
+        }
+    }
+}
+
 
 ```
+
+Edit **Function1.cs**
+```
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
+using Officium.Tools.Helpers;
+
+namespace Officium._4Examples
+{
+    public class IoCFunction
+    {
+        private readonly IRequestResolver requestResolver;
+        public IoCFunction(IRequestResolver requestResolver)
+        {
+            this.requestResolver = requestResolver;
+        }
+
+        [FunctionName("IoC")]
+        public IActionResult Run(
+            [HttpTrigger(
+            AuthorizationLevel.Function, "get", "post",
+            Route = "IoC/")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogDebug($"Executing IoC function");
+            var reqContext = req.MakeRequestContext();
+            var resContext = requestResolver.Execute(reqContext);
+            return resContext.GetActionResult();
+        }
+    }
+
+    public class PreIoCHandler : IHandler
+    {
+        private readonly ITextProvider textProvider;
+
+        public PreIoCHandler(ITextProvider textProvider)
+        {
+            this.textProvider = textProvider;
+        }
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            request.SetInternalValue("Greeting", textProvider.GetGreeting() );
+        }
+    }
+
+    public class IoCHandler : IHandler
+    {
+        private readonly ITextProvider textProvider;
+        public IoCHandler(ITextProvider textProvider)
+        {
+            this.textProvider = textProvider;
+        }
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            response.Result =
+                new
+                { 
+                    Id = request.Id,
+                    Greeting = request.GetValue("greeting"),
+                    Name = textProvider.GetName()
+                };
+        }
+    }
+}
+```
+
+Start the project and point your browser towards the endpoint (something like http://localhost:7071/api/IoC/) and you should get a response similar to 
+
+{"id":"6a79098a-0dba-4e3b-b4b2-7769c43ac90c","greeting":"","name":"Timmy"}
+
+**IMPORTANT CONCEPTS**
+
+Although the IoC provider is used by the framework, it is still available for use.
 
 ## Validation 
 Requests can be validated prior to to being routed to the handler. Validation errors are automatically returned as an action context
