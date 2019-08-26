@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
      <id>Officium.Tools</id>
-    <version>0.0.2-alpha</version>
+    <version>1.0.0</version>
     <authors>Simon Smith</authors>
     <owners>NTiering</owners>
 
@@ -17,7 +17,7 @@
    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 
-    <releaseNotes>Added Auth tools</releaseNotes>
+    <releaseNotes>First major release</releaseNotes>
 
     <description>Extends Azure functions to support routing to handlers, auth, validation and more </description>
 
