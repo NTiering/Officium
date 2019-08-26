@@ -12,7 +12,7 @@ Officium is a framework to support rapid development of azure functions.
 * Validation
 * Dependency Injection / IoC
 * Error Handling
-* Query, Pody (POST'ed) and URL path params supported
+* Query, Post (POST'ed) and URL path params supported
 * Handle before and after every request
 * Header Parameters
 * Unhandled Requests
