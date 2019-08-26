@@ -19,6 +19,8 @@ Officium is a framework to support radpid development of azure functions.
 * Auth and Identity
 ---
 ## Getting Started 
+All these examples are available at https://github.com/NTiering/Officium.Examples
+
 Add handling to your azure function in a few lines of code.
 
 Start a new azure function project
