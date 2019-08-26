@@ -624,26 +624,386 @@ Start the project and point your browser towards the endpoint (something like ht
 
 Although the IoC provider is used by the framework, it is still available for use.
 
+Any IoC provider can be used as long as it provides as it uses an implementation of IServiceCollection. 
 ## Validation 
 Requests can be validated prior to to being routed to the handler. Validation errors are automatically returned as an action context
+
+Validation is run before OnRequest, and is run against a given path (similar to OnRequest handlers)
+
+Edit **Startup.cs**
 ```
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+
+[assembly: FunctionsStartup(typeof(Officium._1aExamples.Startup))]
+namespace Officium._1aExamples
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {  
+            using (var b = new Builder(builder.Services))
+            {
+                b.ValidateRequest<ValidatorHandler>(
+                    RequestMethod.GET,
+                    "/api/Validation");
+
+                b.OnRequest<HelloWorldHandler>(
+                    RequestMethod.GET,
+                    "/api/Validation");
+            }
+
+            builder.Services.AddHttpClient();
+        }
+    }
+}
 
 ```
+Edit **Function1.cs**
+```
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
+using Officium.Tools.Handlers;
+
+namespace Officium._1aExamples
+{
+    public class HelloWorldFunction
+    {
+        private readonly IRequestResolver requestResolver;
+        public HelloWorldFunction(IRequestResolver requestResolver)
+        {
+            this.requestResolver = requestResolver;
+        }
+
+        [FunctionName("Validation")]
+        public IActionResult Run(
+            [HttpTrigger(
+            AuthorizationLevel.Function, "get", "post", 
+            Route = null)]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogDebug($"Executing Validation function");
+            var reqContext = req.MakeRequestContext();
+            var resContext = requestResolver.Execute(reqContext);
+            return resContext.GetActionResult();
+        }
+    }
+
+    public class ValidatorHandler : IHandler
+    {
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            if (string.IsNullOrWhiteSpace(request.GetValue("name")))
+            {
+                response.ValidationErrors.Add(new ValidationError("name", "Please supply a value for name"));
+            }
+        }
+    }
+
+    public class HelloWorldHandler : IHandler
+    {
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            response.Result = new { Message = "Hello " + request.GetValue("name") };
+        }
+    }
+}
+
+``` 
+Start your project and point your browser (probably http://localhost:7071/api/Validation) and you shoudl see 
+
+[{"propertyName":"name","errorMessage":"Please supply a value for name"}]
+
+add a query parameter of name (E.G. http://localhost:7071/api/Validation?name=timmy) and you should see.
+
+{"message":"Hello timmy"}
+
+**IMPORTANT CONCEPTS**
+
+Validation handlers can separate the logic of validation away from operational logic. 
+When validation handlers add validation errors, OnRequest handlers are not called, but AfterEveryRequest handlers will be called. 
+AfterEveryRequest handlers can see the validation erros, so can adjust thier behaviours.   
+  
+
+
 
 
 ## Error Handling
 Errors can be routed to a specified handler, which can be used for logging etc
+
+Edit **Startup.cs**
+```
+using System;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+
+[assembly: FunctionsStartup(typeof(Officium._6Examples.Startup))]
+namespace Officium._6Examples
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {
+            builder.Services.AddSingleton<SimpleLogger, SimpleLogger>();
+
+            using (var b = new Builder(builder.Services))
+            {               
+                b.OnRequest<RequestHandler>(
+                    RequestMethod.GET,
+                    "/api/Errors/");
+
+                b.OnError<ErrorHandler>();
+            }           
+        }
+    }
+}
 ```
 
+Edit **Function1.cs**
 ```
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
+using Officium.Tools.Helpers;
+using System;
+
+namespace Officium._6Examples
+{
+    public class ErrorFunction
+    {
+        private readonly IRequestResolver requestResolver;
+        public ErrorFunction(IRequestResolver requestResolver)
+        {
+            this.requestResolver = requestResolver;
+        }
+
+        [FunctionName("IoC")]
+        public IActionResult Run(
+            [HttpTrigger(
+            AuthorizationLevel.Function, "get", "post",
+            Route = "Errors/")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogDebug($"Executing Error function");
+            var reqContext = req.MakeRequestContext();
+            var resContext = requestResolver.Execute(reqContext);
+            return resContext.GetActionResult();
+        }
+    }
+
+    public class RequestHandler : IHandler
+    {
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            throw new System.IO.FileNotFoundException("Cant Find important file !!!! !");
+        }
+    }
+
+    public class ErrorHandler : IHandler
+    {
+        private readonly SimpleLogger logger;
+
+        public ErrorHandler(SimpleLogger logger)
+        {
+            this.logger = logger; 
+        }
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            logger.Log($"Oh no an error occured of type {response.Exception.GetType().Name} with the message '{response.Exception.Message}'");
+            response.Exception = new Exception("sorry a very generic problem occured. Nothing to see here ");
+        }
+    }
+
+    public class SimpleLogger
+    {
+        public void Log(string message)
+        {
+            var originalFgColour = System.Console.ForegroundColor;
+            var originalbgColour = System.Console.BackgroundColor;
+            System.Console.ForegroundColor = System.ConsoleColor.White;
+            System.Console.BackgroundColor = System.ConsoleColor.Red;
+            System.Console.WriteLine(message);
+            System.Console.ForegroundColor = originalFgColour;
+            System.Console.BackgroundColor = originalbgColour;
+        }
+    }
+
+}
+
+```
+Start your project and point your browser to your endpoint (something like http://localhost:7071/api/Errors/)
+you should see something like 
+
+sorry a very generic problem occured. Nothing to see here 
+
+and in the command prompt window 
+
+Oh no an error occured of type FileNotFoundException with the message 'Cant Find important file !!!! !
+
+**IMPORTANT CONCEPTS**
+
+Error handlers allow errors to be logged in a simple uniform manner
 
 ## 'No Handler' handler
 Requests that have no defined handler can be routed to a dedicated handler
+
+Edit **Startup.cs**
 ```
 
 ```
+
+Edit **Function1.cs**
+```
+
+```
+
+**IMPORTANT CONCEPTS**
 ## Authentication
 Authentication is handled using existing Claims Pricipals
+
+Edit **Startup.cs**
 ```
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+
+[assembly: FunctionsStartup(typeof(Officium._8Examples.Startup))]
+namespace Officium._8Examples
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {
+            builder.Services.AddSingleton<TokenResolver,TokenResolver>();
+
+            using (var b = new Builder(builder.Services))
+            {
+                b.Authorise<AuthHandler>();
+                b.OnRequest<RequestHandler>(
+                   RequestMethod.GET,
+                   "/api/Auth/");
+            }
+        }
+    }
+
+    public class TokenResolver
+    {  
+        public ClaimsIdentity GetIdentity(string token)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim("Role", "WidgetAdmin"),
+                new Claim("Role", "GlobalAdmin")
+            };
+            var rtn = new ClaimsIdentity(claims);
+            return rtn;
+        }
+    }
+}
 
 ```
+
+
+Edit **Function1.cs**
+```
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Officium.Tools.Handlers;
+using Officium.Tools.Request;
+using Officium.Tools.Response;
+using Officium.Tools.Helpers;
+using System.Security.Claims;
+
+namespace Officium._8Examples
+{
+    public class AuthFunction
+    {
+        private readonly IRequestResolver requestResolver;
+        public AuthFunction(IRequestResolver requestResolver)
+        {
+            this.requestResolver = requestResolver;
+        }
+
+        [FunctionName("Auth")]
+        public IActionResult Run(
+            [HttpTrigger(
+            AuthorizationLevel.Function, "get", "post",
+            Route = "Auth/")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogDebug($"Executing Auth function");
+            var reqContext = req.MakeRequestContext();
+            var resContext = requestResolver.Execute(reqContext);
+            return resContext.GetActionResult();
+        }
+    }
+
+    public class AuthHandler : IHandler
+    {
+        private readonly TokenResolver tokenResolver;
+
+        public AuthHandler(TokenResolver tokenResolver)
+        {
+            this.tokenResolver = tokenResolver;
+        }
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            var token = request.GetHeaderValue("Authorization"); // get the user unique token 
+            request.Identity = tokenResolver.GetIdentity(token);
+        }
+    }
+
+    public class RequestHandler : IHandler
+    {
+        private static readonly Claim GlobalAdminClaim = new Claim("Role", "GlobalAdmin"); // reference claim to compare against
+        public void HandleRequest(RequestContext request, ResponseContent response)
+        {
+            if (request.Identity.HasClaim(GlobalAdminClaim))
+            {
+                response.Result = "Welcome our new admin";
+            }
+            else
+            {
+                response.Result = "Hi there";
+            }
+        }
+    }  
+
+}
+
+```
+Start your project and point your browser towards your new endpoint (somethnig like http://localhost:7071/api/Auth/)
+
+you should see something like 
+
+Welcome our new admin
+
+ 
+
+**IMPORTANT CONCEPTS**
+
+Auth handlers are called after BeforeEveryRequest handlers but before OnRequest handlers. All requests use the same Auth handlers. Each handler (excluding the BeforeEveryRequest handler) has access to claims.
+ 
