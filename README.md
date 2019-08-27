@@ -13,7 +13,6 @@ All the examples below are available [here](https://github.com/NTiering/Officium
 - [Validation](#validation)
 - [Variables](#variables)
 - [Dependency Injection / IoC](#dependency-injection--ioc)
-- [Validation](#validation-1)
 - [Error Handling](#error-handling)
 - ['No Handler' handler](#no-handler-handler)
 - [Authentication](#authentication)
