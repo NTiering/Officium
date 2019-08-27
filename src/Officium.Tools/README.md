@@ -1,23 +1,24 @@
 # Officium
-Framework for allow rapid development of Azure Function
-
-## Overview 
-
 Officium is a framework to support radpid development of azure functions. 
 
-## Feature list
+Http requests can be routed to one or more dedicated handlers (think MVC for Azure functions). Handlers can be added for validaton, authentication and error handling.
+Routing can contain optioanl parameters (E.G. *api/student/[studentId]*)
 
-* Support ALL http Methods (GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONSTRACE,PATCH) 
-* Request Routing
-* Validation
-* Dependency Injection / IoC
-* Error Handling
-* Query, Pody (POST'ed) and URL path params supported
-* Handle before and after every request
-* Header Parameters
-* Unhandled Requests
-* Auth and Identity
----
+All the examples below are available [here](https://github.com/NTiering/Officium.Examples)  
+
+##  Table of Contents 
+
+- [Getting Started](#getting-started)
+- [Before and After Every Request](#before-and-after-every-request)
+- [Validation](#validation)
+- [Variables](#variables)
+- [Dependency Injection / IoC](#dependency-injection--ioc)
+- [Validation](#validation-1)
+- [Error Handling](#error-handling)
+- ['No Handler' handler](#no-handler-handler)
+- [Authentication](#authentication)
+
+
 ## Getting Started 
 Add handling to your azure function in a few lines of code.
 
@@ -49,8 +50,6 @@ namespace Officium._1Examples
                     RequestMethod.GET,
                     "/api/HelloWorld");
             }
-
-            builder.Services.AddHttpClient();
         }
     }
 }
