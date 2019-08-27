@@ -18,6 +18,9 @@ All the examples below are available [here](https://github.com/NTiering/Officium
 - ['No Handler' handler](#no-handler-handler)
 - [Authentication](#authentication)
 
+## Getting Started 
+All these examples are available at https://github.com/NTiering/Officium.Examples
+
 
 ## Getting Started 
 Add handling to your azure function in a few lines of code.
