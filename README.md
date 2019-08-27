@@ -1,26 +1,28 @@
 # Officium
-Framework for allow rapid development of Azure Function
+Officium is a framework to support radpid development of azure functions. 
 
-## Overview 
+Http requests can be routed to one or more dedicated handlers (think MVC for Azure functions). Handlers can be added for validaton, authentication and error handling.
+Routing can contain optioanl parameters (E.G. *api/student/[studentId]*)
 
-Officium is a framework to support rapid development of azure functions. 
+All the examples below are available [here](https://github.com/NTiering/Officium.Examples)  
 
-## Feature list
+##  Table of Contents 
 
-* Support ALL http Methods (GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONSTRACE,PATCH) 
-* Request Routing
-* Validation
-* Dependency Injection / IoC
-* Error Handling
-* Query, Post (POST'ed) and URL path params supported
-* Handle before and after every request
-* Header Parameters
-* Unhandled Requests
-* Auth and Identity
----
+- [Getting Started](#getting-started)
+- [Before and After Every Request](#before-and-after-every-request)
+- [Validation](#validation)
+- [Variables](#variables)
+- [Dependency Injection / IoC](#dependency-injection--ioc)
+- [Validation](#validation-1)
+- [Error Handling](#error-handling)
+- ['No Handler' handler](#no-handler-handler)
+- [Authentication](#authentication)
+
 ## Getting Started 
 All these examples are available at https://github.com/NTiering/Officium.Examples
 
+
+## Getting Started 
 Add handling to your azure function in a few lines of code.
 
 Start a new azure function project
@@ -51,13 +53,11 @@ namespace Officium._1Examples
                     RequestMethod.GET,
                     "/api/HelloWorld");
             }
-
-            builder.Services.AddHttpClient();
         }
     }
 }
 ```
-this sets up Dependency injection, and address a handler called *HelloworldHandler* to any GET request on */api/Helloworld*  
+this sets up Dependency injection, and addes a handler called *HelloworldHandler* to any GET request on */api/Helloworld*  
 
 
 Edit the file **Function1.cs**
@@ -128,7 +128,7 @@ Add a query parameter of name (E.G http://localhost:7071/api/HelloWorld?Name=Tim
 
 **IMPORTANT CONCEPTS**
 
-Notice that the actual message is built in the handler, which you have full control over. The request, response and action result are all already constructed and loaded. 
+Notice that the actual message is built in the handler, which you have full control over. The request, responce and action result are all already constructed and loaded. 
 
 As the result is an object, it can be any type you wish to return.
 
@@ -720,7 +720,7 @@ namespace Officium._1aExamples
 }
 
 ``` 
-Start your project and point your browser (probably http://localhost:7071/api/Validation) and you should see 
+Start your project and point your browser (probably http://localhost:7071/api/Validation) and you shoudl see 
 
 [{"propertyName":"name","errorMessage":"Please supply a value for name"}]
 
@@ -732,7 +732,7 @@ add a query parameter of name (E.G. http://localhost:7071/api/Validation?name=ti
 
 Validation handlers can separate the logic of validation away from operational logic. 
 When validation handlers add validation errors, OnRequest handlers are not called, but AfterEveryRequest handlers will be called. 
-AfterEveryRequest handlers can see the validation erros, so can adjust their behaviours.   
+AfterEveryRequest handlers can see the validation erros, so can adjust thier behaviours.   
   
 
 
@@ -827,8 +827,8 @@ namespace Officium._6Examples
         }
         public void HandleRequest(RequestContext request, ResponseContent response)
         {
-            logger.Log($"Oh no an error occurred of type {response.Exception.GetType().Name} with the message '{response.Exception.Message}'");
-            response.Exception = new Exception("sorry a very generic problem occurred. Nothing to see here ");
+            logger.Log($"Oh no an error occured of type {response.Exception.GetType().Name} with the message '{response.Exception.Message}'");
+            response.Exception = new Exception("sorry a very generic problem occured. Nothing to see here ");
         }
     }
 
@@ -852,11 +852,11 @@ namespace Officium._6Examples
 Start your project and point your browser to your endpoint (something like http://localhost:7071/api/Errors/)
 you should see something like 
 
-sorry a very generic problem occurred. Nothing to see here 
+sorry a very generic problem occured. Nothing to see here 
 
 and in the command prompt window 
 
-Oh no an error occurred of type FileNotFoundException with the message 'Cant Find important file !!!! !
+Oh no an error occured of type FileNotFoundException with the message 'Cant Find important file !!!! !
 
 **IMPORTANT CONCEPTS**
 
@@ -997,7 +997,7 @@ namespace Officium._8Examples
 }
 
 ```
-Start your project and point your browser towards your new endpoint (something like http://localhost:7071/api/Auth/)
+Start your project and point your browser towards your new endpoint (somethnig like http://localhost:7071/api/Auth/)
 
 you should see something like 
 
