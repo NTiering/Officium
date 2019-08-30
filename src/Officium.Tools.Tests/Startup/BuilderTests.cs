@@ -64,10 +64,10 @@ namespace Officium.Tools.Tests.Startup
 
         class MockHandler : IHandler
         {
-            public RequestContext Request { get; private set; }
-            public ResponseContent Response { get; private set; }
+            public IRequestContext Request { get; private set; }
+            public IResponseContent Response { get; private set; }
             public int CallCount { get; private set; }
-            public void HandleRequest(RequestContext request, ResponseContent response)
+            public void HandleRequest(IRequestContext request, IResponseContent response)
             {
                 Request = request;
                 Response = response;

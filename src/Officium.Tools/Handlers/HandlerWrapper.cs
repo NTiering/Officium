@@ -8,15 +8,15 @@
     {
         public HandlerOrder Order { get; private set; }
         private readonly IHandler _handler;
-        private readonly Func<RequestContext, ResponseContent, bool> _canHandleAction;
+        private readonly Func<IRequestContext, IResponseContent, bool> _canHandleAction;
         private readonly Dictionary<string, int> _pathParams;
 
-        public HandlerWrapper(HandlerOrder order, IHandler handler, Func<RequestContext, ResponseContent, bool> canHandleAction)
+        public HandlerWrapper(HandlerOrder order, IHandler handler, Func<IRequestContext, IResponseContent, bool> canHandleAction)
             : this(order, handler, canHandleAction, new Dictionary<string, int>())
         {
         }
 
-        public HandlerWrapper(HandlerOrder order, IHandler handler, Func<RequestContext, ResponseContent, bool> canHandleAction, Dictionary<string, int> pathParams)
+        public HandlerWrapper(HandlerOrder order, IHandler handler, Func<IRequestContext, IResponseContent, bool> canHandleAction, Dictionary<string, int> pathParams)
         {
             Order = order;
             _handler = handler;
@@ -24,16 +24,18 @@
             _pathParams = pathParams;
         }
 
-        public bool CanHandleRequest(RequestContext request, ResponseContent response)
+        public bool CanHandleRequest(IRequestContext request, IResponseContent response)
         {
             request.PathParams = _pathParams;
             return _canHandleAction(request, response);
         }
 
-        public void HandleRequest(RequestContext request, ResponseContent response)
+        public void HandleRequest(IRequestContext request, IResponseContent response)
         {
             request.PathParams = _pathParams;
             _handler.HandleRequest(request, response);
         }
+
+        
     }
 }

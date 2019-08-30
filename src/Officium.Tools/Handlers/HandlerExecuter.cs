@@ -15,7 +15,7 @@
             _services = services;
         }
 
-        public void HandleRequest(RequestContext request, ResponseContent response)
+        public void HandleRequest(IRequestContext request, IResponseContent response)
         {
             if (_handler == null)
             {

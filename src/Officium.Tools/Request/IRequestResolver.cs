@@ -4,6 +4,6 @@ namespace Officium.Tools.Request
 {
     public interface IRequestResolver
     {
-        ResponseContent Execute(RequestContext req);
+        IResponseContent Execute(IRequestContext req);
     }
 }

@@ -89,7 +89,7 @@
             var rtn = _pathParamExtractor.MakePathParams(pathSelector);
             return rtn;            
         }
-        private Func<RequestContext, ResponseContent, bool> MakeSelectorAction(RequestMethod method, string pathSelector)
+        private Func<IRequestContext, IResponseContent, bool> MakeSelectorAction(RequestMethod method, string pathSelector)
         {
             return (req, res) =>
             {
@@ -99,7 +99,7 @@
                 return rtn;
             };
         }
-        private static Func<RequestContext, ResponseContent, bool> AlwaysAction
+        private static Func<IRequestContext, IResponseContent, bool> AlwaysAction
         {
             get { return (req, res) => { return true; }; }
         }

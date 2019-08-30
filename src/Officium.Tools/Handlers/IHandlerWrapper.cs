@@ -6,7 +6,7 @@
     public interface IHandlerWrapper 
     {
         HandlerOrder Order { get; }
-        bool CanHandleRequest(RequestContext request, ResponseContent response);
-        void HandleRequest(RequestContext request, ResponseContent response);
+        bool CanHandleRequest(IRequestContext request, IResponseContent response);
+        void HandleRequest(IRequestContext request, IResponseContent response);
     }
 }

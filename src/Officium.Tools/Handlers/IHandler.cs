@@ -5,6 +5,6 @@
 
     public interface IHandler
     {
-        void HandleRequest(RequestContext request, ResponseContent response);
+        void HandleRequest(IRequestContext request, IResponseContent response);
     }
 }

@@ -13,7 +13,7 @@
             _handlers = handlers;
         }
 
-        public ResponseContent Execute(RequestContext req)
+        public IResponseContent Execute(IRequestContext req)
         {
             var res = new ResponseContent { StatusCode = 200 };
             try
@@ -37,7 +37,7 @@
             return res;
         }
 
-        private int ExecuteHandlers(RequestContext req, ResponseContent res, HandlerOrder handlerOrder)
+        private int ExecuteHandlers(IRequestContext req, ResponseContent res, HandlerOrder handlerOrder)
         {
             var chosen = _handlers
                 .Where(x => x.Order == handlerOrder)

@@ -5,15 +5,15 @@
     using System.Security.Claims;
     public class RequestContext : IRequestContext
     {
-        private readonly Dictionary<string, string> internalParams = new Dictionary<string, string>();
-        internal Dictionary<string, string> BodyParams { get; set; }
-        internal Dictionary<string, string> QueryParams { get; set; }
-        internal RequestMethod RequestMethod { get; set; }
-        internal string Path { get; set; }
-        internal Dictionary<string, int> PathParams { get; set; }
-        internal Dictionary<string, string> HeadersParams { get; set; }
+        public RequestMethod RequestMethod { get; set; }
+        public string Path { get; set; }
+        public Dictionary<string, int> PathParams { get; set; }
         public ClaimsIdentity Identity { get; set; }
         public readonly Guid Id = Guid.NewGuid();
+        private readonly Dictionary<string, string> internalParams = new Dictionary<string, string>();
+        internal Dictionary<string, string> BodyParams { get; set; }
+        internal Dictionary<string, string> QueryParams { get; set; } 
+        internal Dictionary<string, string> HeadersParams { get; set; }
         private readonly IValueExtractor valueExtractor;
 
         internal RequestContext(IValueExtractor valueExtractor)

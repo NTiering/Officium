@@ -1,6 +1,6 @@
 ﻿namespace Officium.Tools.Response
 {
-    public class ValidationError
+    public class ValidationError : IValidationError
     {
         public string PropertyName { get; }
         public string ErrorMessage { get; }
@@ -8,6 +8,6 @@
         {
             PropertyName = propertyName;
             ErrorMessage = errorMessage;
-        }    
+        }
     }
 }

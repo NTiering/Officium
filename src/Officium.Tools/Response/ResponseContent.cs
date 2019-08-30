@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.AspNetCore.Mvc;
-    public class ResponseContent
+    public class ResponseContent : IResponseContent
     {
-        public readonly List<ValidationError> ValidationErrors = new List<ValidationError>();
+        public readonly List<IValidationError> ValidationErrors = new List<IValidationError>();
         public int StatusCode { get; set; }
-        public object Result { get; set; } 
+        public object Result { get; set; }
         public Exception Exception { get; set; }
         public ResponseContent()
         {
@@ -17,8 +17,8 @@
         public ActionResult GetActionResult()
         {
             if (Exception != null) return new BadRequestObjectResult(Exception.Message);
-            if (ValidationErrors != null && ValidationErrors.Any())return new BadRequestObjectResult(ValidationErrors);
-            return new OkObjectResult(Result){StatusCode = StatusCode};         
+            if (ValidationErrors != null && ValidationErrors.Any()) return new BadRequestObjectResult(ValidationErrors);
+            return new OkObjectResult(Result) { StatusCode = StatusCode };
         }
     }
 }
