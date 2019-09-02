@@ -7,7 +7,7 @@
     internal class HandlerWrapper : IHandlerWrapper
     {
         public HandlerOrder Order { get; private set; }
-        private readonly IHandler _handler;
+       public IHandler Handler { get; private set; }
         private readonly Func<IRequestContext, IResponseContent, bool> _canHandleAction;
         private readonly Dictionary<string, int> _pathParams;
 
@@ -19,7 +19,7 @@
         public HandlerWrapper(HandlerOrder order, IHandler handler, Func<IRequestContext, IResponseContent, bool> canHandleAction, Dictionary<string, int> pathParams)
         {
             Order = order;
-            _handler = handler;
+            Handler = handler;
             _canHandleAction = canHandleAction;
             _pathParams = pathParams;
         }
@@ -33,9 +33,7 @@
         public void HandleRequest(IRequestContext request, IResponseContent response)
         {
             request.PathParams = _pathParams;
-            _handler.HandleRequest(request, response);
-        }
-
-        
+            Handler.HandleRequest(request, response);
+        }       
     }
 }

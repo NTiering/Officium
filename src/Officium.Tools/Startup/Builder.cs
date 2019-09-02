@@ -10,6 +10,7 @@
     public class Builder : IDisposable
     {
         private readonly List<IHandlerWrapper> _handlerWrappers = new List<IHandlerWrapper>();
+        private readonly List<IStartupHandler> _startupHandlers = new List<IStartupHandler>();
         private readonly IServiceCollection _services;
         private static readonly IRouteMatcher _routeMatcher = new RouteMatcher();
         private static readonly IPathParamExtractor _pathParamExtractor = new PathParamExtractor();
@@ -24,6 +25,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.BeforeEveryRequest, new HandlerExecuter<T>(_services), AlwaysAction));
+            TryAddToStartupHandlers<T>();
             return this;
         }
         public Builder Authorise<T>()
@@ -31,7 +33,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.Authorise, new HandlerExecuter<T>(_services), AlwaysAction));
-
+            TryAddToStartupHandlers<T>();
             return this;
         }
 
@@ -40,6 +42,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.AfterEveryRequest, new HandlerExecuter<T>(_services), AlwaysAction));
+            TryAddToStartupHandlers<T>();
             return this;
         }
 
@@ -48,6 +51,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnError, new HandlerExecuter<T>(_services), AlwaysAction));
+            TryAddToStartupHandlers<T>();
             return this;
         }
 
@@ -56,6 +60,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnNotHandled, new HandlerExecuter<T>(_services), AlwaysAction));
+            TryAddToStartupHandlers<T>();
             return this;
         }
 
@@ -64,6 +69,7 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.ValidateRequest, new HandlerExecuter<T>(_services), MakeSelectorAction(method, pathSelector),MakePathParams(pathSelector)));
+            TryAddToStartupHandlers<T>();
             return this;
         }
 
@@ -72,13 +78,37 @@
         {
             AddToServices<T>();
             _handlerWrappers.Add(new HandlerWrapper(HandlerOrder.OnRequest, new HandlerExecuter<T>(_services), MakeSelectorAction(method, pathSelector), MakePathParams(pathSelector)));
+            TryAddToStartupHandlers<T>();
             return this;
         }
+
         public void Dispose()
         {
             IRequestResolver resolver = new RequestResolver(_handlerWrappers.ToArray());
             _services.AddSingleton(resolver);
+            CallStartupHandlers(_startupHandlers, GetStartupContext());
+
         }
+
+        private void TryAddToStartupHandlers<T>() where T : class, IHandler
+        {
+            if (typeof(IStartupHandler).IsAssignableFrom(typeof(T)))
+            {
+                _startupHandlers.Add(new HandlerStarter(_services, typeof(T)));
+            }
+        }
+
+        private void CallStartupHandlers(List<IStartupHandler> startupHandlers, IHandlerStartupContext handlerStartupContext)
+        {
+            startupHandlers.ForEach(x => x.OnStartup(handlerStartupContext));
+        }       
+
+        private IHandlerStartupContext GetStartupContext()
+        {
+            var rtn = new HandlerStartupContext();
+            return rtn;
+        }
+
         private void AddToServices<T>() where T : class, IHandler
         {
             if (_services.Contains(new ServiceDescriptor(typeof(T), typeof(T), ServiceLifetime.Singleton))) return;

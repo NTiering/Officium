@@ -17,25 +17,26 @@
 
         public void HandleRequest(IRequestContext request, IResponseContent response)
         {
-            if (_handler == null)
-            {
-                lock (this)
-                {
-                    _handler = GetHandler(_services);
-                }
-            }
-            _handler.HandleRequest(request, response);
+            GetHandler(_services).HandleRequest(request, response);
         }
 
         private IHandler GetHandler(IServiceCollection services)
         {
-            var provider = services.BuildServiceProvider();
-            var hdlr = provider.GetService<T>();
-            if (hdlr == null)
+            if (_handler == null)
             {
-                throw new InvalidOperationException($"Unable to construct type of {typeof(T).FullName}");
+                lock (this)
+                {
+                    var provider = services.BuildServiceProvider();
+                    var newHandler = provider.GetService<T>();
+                    if (newHandler == null)
+                    {
+                        throw new InvalidOperationException($"Unable to construct type of {typeof(T).FullName}");
+                    }
+                    _handler = newHandler;
+                }
             }
-            return hdlr;
+
+            return _handler;
         }
     }
 }

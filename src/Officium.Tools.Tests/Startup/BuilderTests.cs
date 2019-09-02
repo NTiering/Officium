@@ -60,10 +60,14 @@ namespace Officium.Tools.Tests.Startup
             {
                 builder.OnRequest<MockHandler>(RequestMethod.NOTMAPPED,"");
             }
-        }
+        }      
+
+       
 
         class MockHandler : IHandler
         {
+            public static bool OnStartupWasCalled { get; set; }
+            public IHandlerStartupContext HandlerStartupContext { get; private set; }
             public IRequestContext Request { get; private set; }
             public IResponseContent Response { get; private set; }
             public int CallCount { get; private set; }
@@ -72,6 +76,12 @@ namespace Officium.Tools.Tests.Startup
                 Request = request;
                 Response = response;
                 CallCount++;
+            }
+
+            public void OnStartup(IHandlerStartupContext context)
+            {
+                OnStartupWasCalled = true;
+                HandlerStartupContext = context;
             }
         }
     }

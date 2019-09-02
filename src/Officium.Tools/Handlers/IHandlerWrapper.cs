@@ -7,6 +7,6 @@
     {
         HandlerOrder Order { get; }
         bool CanHandleRequest(IRequestContext request, IResponseContent response);
-        void HandleRequest(IRequestContext request, IResponseContent response);
+        void HandleRequest(IRequestContext request, IResponseContent response);        
     }
 }
