@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Tools", "Officium.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Tools.Tests", "Officium.Tools.Tests\Officium.Tools.Tests.csproj", "{1343A301-E09C-4073-9189-B50A2293F55E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Officium.Plugins", "Officium.Plugins\Officium.Plugins.csproj", "{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Officium.Plugins.Texts", "Officium.Plugins.Texts\Officium.Plugins.Texts.csproj", "{8B84DC8B-4973-46A4-8578-02394085D64D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{1343A301-E09C-4073-9189-B50A2293F55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1343A301-E09C-4073-9189-B50A2293F55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1343A301-E09C-4073-9189-B50A2293F55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B84DC8B-4973-46A4-8578-02394085D64D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B84DC8B-4973-46A4-8578-02394085D64D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B84DC8B-4973-46A4-8578-02394085D64D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B84DC8B-4973-46A4-8578-02394085D64D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
