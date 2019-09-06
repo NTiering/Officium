@@ -118,26 +118,28 @@ namespace Officium.Plugins
         }
         public ICollection<IFunctionPlugin> MakeExecuteCollection(HttpRequest req, ICollection<IFunctionPlugin> plugins)
         {
-            var result = new List<IFunctionPlugin>();
+            var steps = new List<PluginStepOrder>();
+            steps.AddRange(PluginStepOrderTool.Instance.BeforeSteps);
+            steps.AddRange(PluginStepOrderTool.Instance.AfterSteps);
 
             if (req.Method.Is("Post"))
             {
-                var steps = PluginStepOrderTool.Instance.PostSteps;
-                result.AddRange(plugins.Where(x => steps.Contains(x.StepOrder)).OrderBy(x => x.StepOrder));
+                steps.AddRange(PluginStepOrderTool.Instance.PostSteps);                
             }
             else if (req.Method.Is("Get"))
-            {
-
+            {               
+                steps.AddRange(PluginStepOrderTool.Instance.GetSteps);
             }
             else if (req.Method.Is("Put"))
             {
-
+                steps.AddRange(PluginStepOrderTool.Instance.PutSteps);
             }
             else if (req.Method.Is("Delete"))
             {
-
+                steps.AddRange(PluginStepOrderTool.Instance.DeleteSteps);
             }
-
+            
+            var result = plugins.Where(x => steps.Contains(x.StepOrder)).OrderBy(x => x.StepOrder).ToArray();
             return result;
 
         }
@@ -150,6 +152,8 @@ namespace Officium.Plugins
         public IEnumerable<PluginStepOrder> PostSteps { get; private set; }
         public IEnumerable<PluginStepOrder> PutSteps { get; private set; }
         public IEnumerable<PluginStepOrder> DeleteSteps { get; private set; }
+        public IEnumerable<PluginStepOrder> AfterSteps { get; private set; }
+        public IEnumerable<PluginStepOrder> BeforeSteps { get; private set; }
 
         private PluginStepOrderTool()
         {
@@ -157,6 +161,8 @@ namespace Officium.Plugins
             PostSteps = ExtractSteps("Post");
             PutSteps = ExtractSteps("Put");
             DeleteSteps = ExtractSteps("Delete");
+            BeforeSteps = new[] { PluginStepOrder.AlwaysFirst, PluginStepOrder.BeforeAll }.OrderBy(x => x);
+            AfterSteps = new[] { PluginStepOrder.AlwaysLast, PluginStepOrder.AfterAll }.OrderBy(x=> x);
         }
 
         private static IEnumerable<PluginStepOrder> ExtractSteps(string prefix)
@@ -166,7 +172,7 @@ namespace Officium.Plugins
                .Where(x =>
                {
                    var s = x.ToString();
-                   var rtn = s.Contains(prefix) || s.Contains("Always") || s.Contains("All");
+                   var rtn = s.Contains(prefix);
                    return rtn;
                })
                .OrderBy(x => (int)x);
