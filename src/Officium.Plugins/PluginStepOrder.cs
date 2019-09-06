@@ -24,7 +24,7 @@ namespace Officium.Plugins
         AfterDelete     = 313,
       
         AfterAll        = 999,
-        AlwaysAfter      = 1999
+        AlwaysLast      = 1999
     }
 }
 

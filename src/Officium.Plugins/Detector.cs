@@ -27,12 +27,12 @@ namespace Officium.Plugins
         {
             assemblies.ForEach(assembly =>
                             {
-                            assembly.GetTypes()
-                                .Where(x => x.IsClass)
-                                .Where(x => x.IsAbstract == false)
-                                .Where(x => typeof(IFunctionPlugin).IsAssignableFrom(x))
-                                .ToList()
-                                .ForEach(onFound);
+                                assembly.GetTypes()
+                                    .Where(x => x.IsClass)
+                                    .Where(x => x.IsAbstract == false)
+                                    .Where(x => typeof(IFunctionPlugin).IsAssignableFrom(x))
+                                    .ToList()
+                                    .ForEach(onFound);
                             });
         }
     }
@@ -40,11 +40,11 @@ namespace Officium.Plugins
     /// <summary>
     /// Holds a reference of all plugins 
     /// </summary>
-    public class Register
+    public class Register : IRegister
     {
         private readonly IServiceCollection _serviceCollection;
 
-        public Register(IServiceCollection serviceCollection )
+        public Register(IServiceCollection serviceCollection)
         {
             _serviceCollection = serviceCollection;
         }
@@ -60,30 +60,106 @@ namespace Officium.Plugins
     /// </summary>
     public class Executor
     {
-        private readonly Register register = new Register(null);
+        private readonly ICollection<IFunctionPlugin> allPlugins;
 
-        public IActionResult ExecuteRequest(HttpRequest req, ILogger logger)
+        public Executor(ICollection<IFunctionPlugin> allPlugins)
         {
-            return null;
+            this.allPlugins = allPlugins;
+        }
+
+        public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context = null)
+        {
+            var executeCollection = ExecuteCollectionBuilder.Instance.MakeExecuteCollection(req, allPlugins);
+            var rtn = ExecuteCollectionExecutor.Instance.ExecuteCollection(executeCollection, req, logger, context);
+            return rtn;
+        }
+
+    }
+
+    public static class StringExt
+    {
+        public static bool Is(this string s, string compare)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return false;
+            return string.Compare(s, compare, true) == 0;
         }
     }
-    public class ExecuteCollectionBuilder
+
+    public class ExecuteCollectionExecutor
     {
-        public ICollection<IFunctionPlugin> MakeEceuteCollection(ICollection<IFunctionPlugin> plugins)
+        public static ExecuteCollectionExecutor Instance = new ExecuteCollectionExecutor();
+        private ExecuteCollectionExecutor()
         {
 
-            return null;
+        }
+
+        public IActionResult ExecuteCollection(ICollection<IFunctionPlugin> executeCollection, HttpRequest req, ILogger logger, IPluginContext context)
+        {
+            IActionResult result = null;
+            executeCollection.OrderBy(x=>x.StepOrder).ToList().ForEach(plugin =>
+            {
+                if (result == null)
+                {
+                    result = plugin.ExecuteRequest(req, logger, context);
+                }
+            });
+
+            return result;
+        }
+    }
+
+    public class ExecuteCollectionBuilder
+    {
+        public static ExecuteCollectionBuilder Instance = new ExecuteCollectionBuilder();
+
+        private ExecuteCollectionBuilder()
+        {
+
+        }
+        public ICollection<IFunctionPlugin> MakeExecuteCollection(HttpRequest req, ICollection<IFunctionPlugin> plugins)
+        {
+            var result = new List<IFunctionPlugin>();
+
+            if (req.Method.Is("Post"))
+            {
+                var steps = PluginStepOrderTool.Instance.PostSteps;
+                result.AddRange(plugins.Where(x => steps.Contains(x.StepOrder)).OrderBy(x => x.StepOrder));
+            }
+            else if (req.Method.Is("Get"))
+            {
+
+            }
+            else if (req.Method.Is("Put"))
+            {
+
+            }
+            else if (req.Method.Is("Delete"))
+            {
+
+            }
+
+            return result;
+
         }
     }
 
     public class PluginStepOrderTool
     {
-        public IEnumerable<PluginStepOrder> GetSteps { get { return ExtractSteps("Get"); } }
-        public IEnumerable<PluginStepOrder> PostSteps { get { return ExtractSteps("Post"); } }
-        public IEnumerable<PluginStepOrder> PutSteps { get { return ExtractSteps("Put"); } }
-        public IEnumerable<PluginStepOrder> DeleteSteps { get { return ExtractSteps("Delete"); } }
+        public static PluginStepOrderTool Instance = new PluginStepOrderTool();
+        public IEnumerable<PluginStepOrder> GetSteps { get; private set; }
+        public IEnumerable<PluginStepOrder> PostSteps { get; private set; }
+        public IEnumerable<PluginStepOrder> PutSteps { get; private set; }
+        public IEnumerable<PluginStepOrder> DeleteSteps { get; private set; }
 
-        private IEnumerable<PluginStepOrder> ExtractSteps(string prefix)
+        private PluginStepOrderTool()
+        {
+            GetSteps = ExtractSteps("Get");
+            PostSteps = ExtractSteps("Post");
+            PutSteps = ExtractSteps("Put");
+            DeleteSteps = ExtractSteps("Delete");
+        }
+
+        private static IEnumerable<PluginStepOrder> ExtractSteps(string prefix)
         {
             var values = Enum.GetValues(typeof(PluginStepOrder))
                .Cast<PluginStepOrder>()
@@ -93,18 +169,25 @@ namespace Officium.Plugins
                    var rtn = s.Contains(prefix) || s.Contains("Always") || s.Contains("All");
                    return rtn;
                })
-               .OrderBy(x => (int) x);            
+               .OrderBy(x => (int)x);
 
 
             return values;
         }
     }
 
-        /// <summary>
-        /// Represents a 
-        /// </summary>
-        public interface IFunctionPlugin
+    /// <summary>
+    /// Represents a single plugin
+    /// </summary>
+    public interface IFunctionPlugin
     {
         PluginStepOrder StepOrder { get; }
+
+        IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context);
+    }
+
+    public interface IPluginContext
+    {
+
     }
 }
