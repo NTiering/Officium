@@ -3,13 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Tools", "Officium.Tools\Officium.Tools.csproj", "{84C35092-94A0-4AC4-AD4F-B43084C6E007}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins", "Officium.Plugins\Officium.Plugins.csproj", "{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Tools.Tests", "Officium.Tools.Tests\Officium.Tools.Tests.csproj", "{1343A301-E09C-4073-9189-B50A2293F55E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Officium.Plugins", "Officium.Plugins\Officium.Plugins.csproj", "{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Officium.Plugins.Texts", "Officium.Plugins.Texts\Officium.Plugins.Texts.csproj", "{8B84DC8B-4973-46A4-8578-02394085D64D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins.Texts", "Officium.Plugins.Texts\Officium.Plugins.Texts.csproj", "{8B84DC8B-4973-46A4-8578-02394085D64D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,14 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{84C35092-94A0-4AC4-AD4F-B43084C6E007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84C35092-94A0-4AC4-AD4F-B43084C6E007}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84C35092-94A0-4AC4-AD4F-B43084C6E007}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84C35092-94A0-4AC4-AD4F-B43084C6E007}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1343A301-E09C-4073-9189-B50A2293F55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1343A301-E09C-4073-9189-B50A2293F55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1343A301-E09C-4073-9189-B50A2293F55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1343A301-E09C-4073-9189-B50A2293F55E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU

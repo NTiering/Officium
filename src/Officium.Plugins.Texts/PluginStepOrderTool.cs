@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Officium.Plugins;
 using Xunit;
+using Officium.Plugins.Helpers;
 
 namespace Officium.Plugins.Texts
 {
@@ -48,14 +49,14 @@ namespace Officium.Plugins.Texts
         [Fact]
         public void BeforeReturnsCorrectValues()
         {
-            var steps = PluginStepOrderTool.Instance.BeforeSteps.ToArray();
+            var steps = PluginStepOrderTool.Instance.BeforeAllSteps.ToArray();
             steps[0].ShouldBeEqualTo(PluginStepOrder.AlwaysFirst);
             steps[1].ShouldBeEqualTo(PluginStepOrder.BeforeAll);
         }
         [Fact]
         public void AfterReturnsCorrectValues()
         {
-            var steps = PluginStepOrderTool.Instance.AfterSteps.ToArray();
+            var steps = PluginStepOrderTool.Instance.AfterAllSteps.ToArray();
             steps[0].ShouldBeEqualTo(PluginStepOrder.AfterAll);
             steps[1].ShouldBeEqualTo(PluginStepOrder.AlwaysLast);
         }       

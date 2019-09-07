@@ -1,11 +1,8 @@
-﻿using System;
-
-
-namespace Officium.Plugins
+﻿namespace Officium.Plugins
 {
     public enum PluginStepOrder
     {
-        AlwaysFirst      = -999,
+        AlwaysFirst      = -1999,
         BeforeAll       = 0,
 
         BeforeGet       = 110,
