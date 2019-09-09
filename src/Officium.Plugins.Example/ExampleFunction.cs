@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
 namespace Officium.Plugins.Example
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+
     public class Example
     {
         private readonly IExecutor executor;
@@ -17,7 +17,7 @@ namespace Officium.Plugins.Example
 
         [FunctionName("ExampleFunction")]
         public IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "v1/{n1?}/{n2?}/{n3?}/{n4?}/{n5?}/{n6?}/{n7?}/{n8?}/{n9?}/{n10?}/{n11?}/{n12?}/{n13?}/{n14?}/")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "v1/{n1?}")] HttpRequest req,
             ILogger log)
         {           
             return executor.ExecuteRequest(req, log);

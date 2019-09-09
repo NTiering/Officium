@@ -8,8 +8,8 @@ namespace Officium.Plugins.Example
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddPlugins();
-            builder.Services.AddOficuimServices();
+            builder.Services.AddPlugins(); // find and register all classes implementing 'IFunctionPlugin'
+            builder.Services.AddOficuimServices(); // add the services we'll need 
         }
     }
 }
