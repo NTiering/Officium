@@ -14,16 +14,15 @@ namespace Officium.Plugins.Helpers
 
         public IActionResult Execute(ICollection<IFunctionPlugin> executeCollection, HttpRequest req, ILogger logger, IPluginContext context)
         {
-            IActionResult result = null;
-            executeCollection.OrderBy(x => x.StepOrder).ToList().ForEach(plugin =>
-              {
-                  if (result == null)
-                  {
-                      result = plugin.ExecuteRequest(req, logger, context);
-                  }
-              });
+            IActionResult result = executeCollection
+                .OrderBy(x => x.StepOrder)
+                .Select(plugin => plugin.ExecuteRequest(req, logger, context))
+                .LastOrDefault(x => x != null);
 
             return result;
-        }
+        }          
     }
+
+    
+
 }

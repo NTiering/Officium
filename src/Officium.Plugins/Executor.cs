@@ -9,7 +9,7 @@ namespace Officium.Plugins
     /// <summary>
     /// Executes a request and routes response
     /// </summary>
-    public class Executor
+    public class Executor : IExecutor
     {
         private readonly ICollection<IFunctionPlugin> allPlugins;
 
