@@ -5,7 +5,7 @@ using Officium.Plugins;
 using Xunit;
 using Officium.Plugins.Helpers;
 
-namespace Officium.Plugins.Texts
+namespace Officium.Plugins.Tests
 {
     public class PluginStepOrderToolTests
     {      

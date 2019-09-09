@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins", "Officium.Plugins\Officium.Plugins.csproj", "{AA7DDF55-73D5-49BE-84C8-7B6EA341D8D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins.Texts", "Officium.Plugins.Texts\Officium.Plugins.Texts.csproj", "{8B84DC8B-4973-46A4-8578-02394085D64D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins.Tests", "Officium.Plugins.Texts\Officium.Plugins.Tests.csproj", "{8B84DC8B-4973-46A4-8578-02394085D64D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Officium.Plugins.Example", "Officium.Plugins.Example\Officium.Plugins.Example.csproj", "{94647A77-31E2-4937-8F14-10E5EB23A25C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Officium.Plugins.Example", "Officium.Plugins.Example\Officium.Plugins.Example.csproj", "{94647A77-31E2-4937-8F14-10E5EB23A25C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

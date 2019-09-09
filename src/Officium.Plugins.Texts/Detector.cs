@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Officium.Plugins.Texts
+namespace Officium.Plugins.Tests
 {
     public class DetectorTests
     {

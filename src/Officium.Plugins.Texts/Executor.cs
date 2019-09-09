@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using Xunit;
 
-namespace Officium.Plugins.Texts
+namespace Officium.Plugins.Tests
 {
     public class ExecutorTests
     {

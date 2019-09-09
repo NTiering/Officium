@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Officium.Plugins.Texts
+namespace Officium.Plugins.Tests
 {
     public class RegisterTests
     {
