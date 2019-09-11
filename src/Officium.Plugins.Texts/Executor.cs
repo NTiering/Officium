@@ -58,7 +58,7 @@ namespace Officium.Plugins.Tests
             var plugins = PostPlugins();
             var callCount = -1;
 
-            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new MockContext());
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new ExecutorTestsContext());
 
             plugins.Cast<MockPlugin>().Where(x=>x.HttpRequest != null).ToList().ForEach(plugin => 
             {
@@ -98,7 +98,7 @@ namespace Officium.Plugins.Tests
             var plugins = PostPlugins();
             var callCount = -1;
 
-            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new MockContext());
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new ExecutorTestsContext());
 
             plugins.Cast<MockPlugin>().Where(x => x.HttpRequest != null).ToList().ForEach(plugin =>
             {
@@ -137,7 +137,7 @@ namespace Officium.Plugins.Tests
             var plugins = PostPlugins();
             var callCount = -1;
 
-            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new MockContext());
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new ExecutorTestsContext());
 
             plugins.Cast<MockPlugin>().Where(x => x.HttpRequest != null).ToList().ForEach(plugin =>
             {
@@ -176,13 +176,59 @@ namespace Officium.Plugins.Tests
             var plugins = PostPlugins();
             var callCount = -1;
 
-            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new MockContext());
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, new ExecutorTestsContext());
 
             plugins.Cast<MockPlugin>().Where(x => x.HttpRequest != null).ToList().ForEach(plugin =>
             {
                 Assert.True(plugin.CallCount > callCount);
                 callCount = plugin.CallCount.Value;
             });
+        }
+
+        [Fact]
+        public void ExecutorAddAContextIfOneIsNoSupplied()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugins = new[] { new MockPlugin(PluginStepOrder.OnPut) };
+            
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object);
+
+            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void ExecutorUsesSuppliedContext()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            var context = new ExecutorTestsContext();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugins = new[] { new MockPlugin(PluginStepOrder.OnPut) };
+
+
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, context);
+
+            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldBeEqualTo(context);
+        }
+
+        [Fact]
+        public void SettingStopHaltsExecution()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            var context = new ExecutorTestsContext();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugin1 = new MockPlugin(PluginStepOrder.BeforePut,true);            
+            var plugin2 = new MockPlugin(PluginStepOrder.AfterPut);
+            
+            var plugins = new IFunctionPlugin[] { plugin1, plugin2 };
+            
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, context);
+
+            plugin1.IPluginContext.ShouldNotBeNull();
+            plugin2.IPluginContext.ShouldBeNull();
         }
 
         /// -------------------------------------------
@@ -221,11 +267,14 @@ namespace Officium.Plugins.Tests
             public IPluginContext IPluginContext { get; private set; }
             public PluginStepOrder StepOrder { get; private set; }
 
+            private readonly bool _haltExecution;
+
             public IActionResult ActionResult { get; set; }
 
-            public MockPlugin(PluginStepOrder pluginStepOrder)
+            public MockPlugin(PluginStepOrder pluginStepOrder, bool haltExecution = false)
             {
                 StepOrder = pluginStepOrder;
+                _haltExecution = haltExecution;
             }
             
             public int? CallCount { get; set; }
@@ -236,7 +285,12 @@ namespace Officium.Plugins.Tests
 
             public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context)
             {
-                CallCount = ((MockContext)context)?.GetCount();
+                context.HaltExecution = _haltExecution; 
+                if (context is ExecutorTestsContext)
+                {
+                    CallCount = ((ExecutorTestsContext)context)?.GetCount();    
+                }
+               
                 HttpRequest = req;
                 ILogger = logger;
                 IPluginContext = context;
@@ -246,8 +300,10 @@ namespace Officium.Plugins.Tests
            
         }
 
-        class MockContext : IPluginContext
+        class ExecutorTestsContext : IPluginContext
         {
+            public bool HaltExecution { get; set; }
+
             int i; 
             public int GetCount()
             {

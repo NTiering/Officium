@@ -21,7 +21,7 @@ namespace Officium.Plugins
         public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context = null)
         {
             var executeCollection = ExecuteCollectionBuilder.Instance.MakeExecuteCollection(req, allPlugins);
-            var rtn = PluginExecutor.Instance.Execute(executeCollection, req, logger, context);
+            var rtn = PluginExecutor.Instance.Execute(executeCollection, req, logger, context ?? new DefaultPluginContext());
             return rtn;
         }
 

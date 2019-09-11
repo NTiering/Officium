@@ -27,10 +27,10 @@ namespace Officium.Plugins.Tests
             new Detector().Detect((Type type) => foundTypes.Add(type));
 
             // assert 
-            Assert.Contains(foundTypes, (x) => { return x == typeof(MockPlugin); });
+            Assert.Contains(foundTypes, (x) => { return x == typeof(DetectorTestPlugin); });
         }
 
-        class MockPlugin : IFunctionPlugin
+        class DetectorTestPlugin : IFunctionPlugin
         {
             public PluginStepOrder StepOrder => throw new NotImplementedException();
 

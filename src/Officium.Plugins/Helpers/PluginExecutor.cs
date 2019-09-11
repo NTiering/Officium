@@ -16,7 +16,7 @@ namespace Officium.Plugins.Helpers
         {
             IActionResult result = executeCollection
                 .OrderBy(x => x.StepOrder)
-                .Select(plugin => plugin.ExecuteRequest(req, logger, context))
+                .Select(plugin => context.HaltExecution ? null : plugin.ExecuteRequest(req, logger, context))
                 .LastOrDefault(x => x != null);
 
             return result;

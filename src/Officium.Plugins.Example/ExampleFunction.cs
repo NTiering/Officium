@@ -31,6 +31,7 @@ namespace Officium.Plugins.Example
         public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context)
         {
             logger.LogInformation($"Request from {req.Path} processed");
+            // context.HaltExecution = true; // set this to stop further handlers exeuting 
             return null; 
         }
     }
