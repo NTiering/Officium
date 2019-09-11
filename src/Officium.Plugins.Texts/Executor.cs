@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -207,10 +208,8 @@ namespace Officium.Plugins.Tests
             http.Setup(x => x.Method).Returns("Put");
             var plugins = new[] { new MockPlugin(PluginStepOrder.OnPut) };
 
-
             new Executor(plugins).ExecuteRequest(http.Object, logger.Object, context);
-
-            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldBeEqualTo(context);
+            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldBeEqualTo(context);           
         }
 
         [Fact]
@@ -220,15 +219,33 @@ namespace Officium.Plugins.Tests
             var http = new Mock<HttpRequest>();
             var context = new ExecutorTestsContext();
             http.Setup(x => x.Method).Returns("Put");
-            var plugin1 = new MockPlugin(PluginStepOrder.BeforePut,true);            
+            var plugin1 = new MockPlugin(PluginStepOrder.BeforePut, true);
             var plugin2 = new MockPlugin(PluginStepOrder.AfterPut);
-            
+
             var plugins = new IFunctionPlugin[] { plugin1, plugin2 };
-            
+
             new Executor(plugins).ExecuteRequest(http.Object, logger.Object, context);
 
             plugin1.IPluginContext.ShouldNotBeNull();
             plugin2.IPluginContext.ShouldBeNull();
+        }
+
+        [Fact]
+        public void OnHanderExecutedIsCalled()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            var called = false;
+            var context = new ExecutorTestsContext();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugin1 = new MockPlugin(PluginStepOrder.BeforePut, true);
+            var plugins = new IFunctionPlugin[] { plugin1, };
+            var executor = new Executor(plugins);
+            executor.OnHanderExecuted = (a, b, c, d) => { called = true; };
+            executor.ExecuteRequest(http.Object, logger.Object, context);
+
+            called.ShouldBeTrue();
+  
         }
 
         /// -------------------------------------------
