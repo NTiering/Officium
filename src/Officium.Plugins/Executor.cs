@@ -4,6 +4,7 @@ namespace Officium.Plugins
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Officium.Plugins.Helpers;
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -18,10 +19,12 @@ namespace Officium.Plugins
             this.allPlugins = allPlugins;
         }
 
+        public Action<IFunctionPlugin ,HttpRequest, ILogger, IPluginContext> OnHanderExecuted { get; set; }
+
         public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context = null)
         {
             var executeCollection = ExecuteCollectionBuilder.Instance.MakeExecuteCollection(req, allPlugins);
-            var rtn = PluginExecutor.Instance.Execute(executeCollection, req, logger, context ?? new DefaultPluginContext());
+            var rtn = PluginExecutor.Instance.Execute(executeCollection, req, logger, context ?? new DefaultPluginContext() , new HandlerExecutedAction(OnHanderExecuted));
             return rtn;
         }
 

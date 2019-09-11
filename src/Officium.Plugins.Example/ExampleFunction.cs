@@ -13,7 +13,9 @@ namespace Officium.Plugins.Example
         public Example(IExecutor executor)
         {
             this.executor = executor;
+            executor.OnHanderExecuted = LogHandlerRan;
         }
+      
 
         [FunctionName("ExampleFunction")]
         public IActionResult Run(
@@ -21,6 +23,11 @@ namespace Officium.Plugins.Example
             ILogger log)
         {           
             return executor.ExecuteRequest(req, log);
+        }
+
+        private static void LogHandlerRan(IFunctionPlugin plugin, HttpRequest req, ILogger logger, IPluginContext ctx)
+        {
+            logger.LogInformation($"Just ran {plugin.GetType().Name} for url {req.Path}");
         }
     }
 
@@ -44,7 +51,7 @@ namespace Officium.Plugins.Example
         {
             string name = req.Query["name"];
             return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
+                ? (ActionResult) new OkObjectResult($"Hello, {name}")
                 : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
     }
