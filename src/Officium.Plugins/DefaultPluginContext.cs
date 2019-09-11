@@ -5,5 +5,6 @@
     /// </summary>
     internal class DefaultPluginContext : IPluginContext
     {
+        public bool HaltExecution { get; set; }
     }
 }
