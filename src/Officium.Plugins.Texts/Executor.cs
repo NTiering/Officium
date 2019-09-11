@@ -185,6 +185,34 @@ namespace Officium.Plugins.Tests
             });
         }
 
+        [Fact]
+        public void ExecutorAddAContextIfOneIsNoSupplied()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugins = new[] { new MockPlugin(PluginStepOrder.OnPut) };
+            
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object);
+
+            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void ExecutorUsesSuppliedContext()
+        {
+            var logger = new Mock<ILogger>();
+            var http = new Mock<HttpRequest>();
+            var context = new MockContext();
+            http.Setup(x => x.Method).Returns("Put");
+            var plugins = new[] { new MockPlugin(PluginStepOrder.OnPut) };
+
+
+            new Executor(plugins).ExecuteRequest(http.Object, logger.Object, context);
+
+            plugins.Cast<MockPlugin>().First().IPluginContext.ShouldBeEqualTo(context);
+        }
+
         /// -------------------------------------------
         ///        --------- HELPERS  --------
         /// -------------------------------------------
@@ -236,7 +264,11 @@ namespace Officium.Plugins.Tests
 
             public IActionResult ExecuteRequest(HttpRequest req, ILogger logger, IPluginContext context)
             {
-                CallCount = ((MockContext)context)?.GetCount();
+                if (context is MockContext)
+                {
+                    CallCount = ((MockContext)context)?.GetCount();
+                }
+                
                 HttpRequest = req;
                 ILogger = logger;
                 IPluginContext = context;
